@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:700');
+
 * {
   margin: 0;
   padding: 0;
+
 }
 
  body{
@@ -25,7 +28,30 @@
  	width: 550px;
  	height: 650px;
  }
+ .mastermind button{
+	font-family: 'Roboto', sans-serif;
+	display: none;
+	position: absolute;
+	width: auto;
+	background-color: #AFABAB;
+	outline: none;
+	border:2px solid black;  
+	width: 58px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 15px;
+ }
+ .mastermind button:hover {
+	animation: rainbow 10s infinite;
+  	animation-fill-mode: forwards;
+	cursor: hand;
+}
 
+ .mastermind img{
+	display: none;
+	position: absolute;
+	width: 58px;
+ }
   .colours{
  	position: relative;
  	margin:0 auto;
@@ -35,6 +61,7 @@
  }
 
  #table{
+	position: relative;
  	display: block;
  	margin:0 auto;
  	width: 400px;
@@ -58,4 +85,60 @@
     height:33px;
 }
 
+#block_circles-1 span,#block_circles-2 span,#block_circles-3 span,
+#block_circles-4 span,#block_circles-5 span,#block_circles-6 span,
+#block_circles-7 span,#block_circles-8 span,#block_circles-9 span,
+#block_circles-10 span{
+	width:11px;
+	height:11px;
+	border:1px solid black;  
+}
 
+#block_circles-1,#block_circles-2,#block_circles-3,
+#block_circles-4,#block_circles-5,#block_circles-6,
+#block_circles-7,#block_circles-8,#block_circles-9,
+#block_circles-10{
+	display: none;
+}
+#button-9{
+	display: block;
+}
+#block-10{
+	display: block;
+}
+
+#block_circles-10{
+	display: block;
+}
+
+#block_circles-10 span{
+	display: block;
+}
+
+#small_circle-10-1{
+	background-color: white;
+}
+#small_circle-10-2{
+	background-color: red;
+}
+
+@keyframes rainbow {
+	15% {
+	  background: #FF0000;
+	}
+	30% {
+	  background: #ED7D31;
+	}
+	45% {
+	  background: #FFFF00;
+	}
+	60% {
+	  background: #00B050;
+	}
+	75% {
+		background: #00B0F0;
+	  }
+	100% {
+		background: #7030A0;
+	}
+  }
