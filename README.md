@@ -2,4 +2,4 @@
 ###### Paul Lindhorst
 ###### Technische Universiteit Delft
 
-# Masterind online multiplayer game 
+# Mastermind online multiplayer game 
