@@ -15,19 +15,32 @@
  	width: 30px;
  }
 
+
  #exit, #new{
- 	height: 30px;
- 	width: 30px;
- 	padding-bottom: 5px;
- }
+	position: absolute;
+	height: 30px;
+	width: 30px;
+	padding-bottom: 5px;
+}
+
+#exit{
+	top:10px;
+	left:10px;
+}
+
+#new{
+	top:45px;
+	left:10px;
+}
 
  .mastermind{
  	position: relative;
  	margin:0 auto;
- 	margin-top: 30px;
+ 	margin-top: 10px;
  	width: 550px;
  	height: 650px;
  }
+
  .mastermind button{
 	font-family: 'Roboto', sans-serif;
 	display: none;
