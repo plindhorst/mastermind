@@ -39,7 +39,7 @@ function draw_table() {
 		block.style.top = (y-10)+'px';
 		block.style.left = '500px';
 		block.id = "block-" + n;
-		block.setAttribute("src", "img/block.png");
+		block.setAttribute("src", "images/block.png");
 		document.getElementById('mastermind').appendChild(block);
 		//create small circles box
 		var div = document.createElement("div");
@@ -105,7 +105,7 @@ $(".colours span").click(function() {
 	}
 	var p = $(this).position();
 	selected_colour = rgb2hex($(this).css( "background-color" ));
-	document.body.style.cursor = 'url("img/cursors/'+selected_colour+'.png"), auto';
+	document.body.style.cursor = 'url("images/cursors/'+selected_colour+'.png"), auto';
 
 	$(this).css({
 		'top':p.top-4,

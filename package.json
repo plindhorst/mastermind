@@ -2,7 +2,11 @@
   "name": "mastermind",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
+  "dependencies": {
+    "express-generator": "^4.16.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,8 +20,5 @@
   "bugs": {
     "url": "https://github.com/yepiru/mastermind/issues"
   },
-  "homepage": "https://github.com/yepiru/mastermind#readme",
-  "dependencies": {
-    "express-generator": "^4.16.0"
-  }
+  "homepage": "https://github.com/yepiru/mastermind#readme"
 }
