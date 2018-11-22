@@ -1,23 +1,31 @@
 <html>
+
 <head>
-<meta charset="utf-8">
-<title>Mastermind</title>
-<link rel="stylesheet" href="stylesheets/game.css">
-<link rel="shortcut icon" type="image/x-png" href="images/favicon.png" />
+	<meta charset="utf-8">
+	<title>Mastermind</title>
+	<link rel="stylesheet" href="stylesheets/game.css">
+	<link rel="shortcut icon" type="image/x-png" href="images/favicon.png" />
 </head>
+
 <body>
 	<div class="buttons">
-		<img id="exit" src="images/exit.png">	<!-- add tooltips -->
+		<img id="exit" src="images/exit.png"> <!-- add tooltips -->
 		<img id="new" src="images/new.png">
 	</div>
-	
+	<div class="opponent" id="opponent">
+		<p>Opponent's Progress:</p>
+		<img src="images/opponent.png">
+	</div>
 	<div class="mastermind" id="mastermind">
 		<img id="table" src="images/table.png">
 	</div>
+
 	<div class="colours" id="colours">
 		<img id="colour_table" src="images/colour_table.png">
 	</div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="javascripts/game.js"></script>
+	<p id="time">Game duration: 1:03</p>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="javascripts/game.js"></script>
 </body>
+
 </html>

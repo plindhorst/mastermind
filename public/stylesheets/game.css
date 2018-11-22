@@ -1,157 +1,238 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:700');
 
 * {
-  margin: 0;
-  padding: 0;
-
+	margin: 0;
+	padding: 0;
 }
 
- body{
-    background-color: rgb(112,112,112);
- }
+body {
+	background-color: rgb(112, 112, 112);
+}
 
- .buttons{
- 	margin: 10px;
- 	width: 30px;
- }
+/*		Game Duration	 */
+#time {
+	font-family: 'Roboto', sans-serif;
+	color: rgb(220, 220, 220);
+	position: absolute;
+	bottom: 8;
+	left: 15;
+}
+
+/*		Buttons		*/
+.buttons {
+	margin: 10px;
+	width: 30px;
+}
 
 
- #exit, #new{
+#exit,
+#new {
 	position: absolute;
 	height: 30px;
 	width: 30px;
 	padding-bottom: 5px;
 }
 
-#exit{
-	top:10px;
-	left:10px;
+#exit:hover,
+#new:hover {
+	cursor: pointer;
 }
 
-#new{
-	top:45px;
-	left:10px;
+#exit {
+	top: 10px;
+	left: 10px;
 }
 
- .mastermind{
- 	position: relative;
- 	margin:0 auto;
- 	margin-top: 10px;
- 	width: 550px;
- 	height: 650px;
- }
+#new {
+	top: 45px;
+	left: 10px;
+}
 
- .mastermind button{
+/*		Mastermind Table		*/
+.mastermind {
+	position: relative;
+	margin: 0 auto;
+	margin-top: 25px;
+	width: 550px;
+	height: 650px;
+}
+
+.mastermind button {
 	font-family: 'Roboto', sans-serif;
 	display: none;
 	position: absolute;
 	width: auto;
 	background-color: #AFABAB;
 	outline: none;
-	border:2px solid black;  
+	border: 2px solid black;
 	width: 58px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	font-size: 15px;
- }
- .mastermind button:hover {
+}
+
+.mastermind button:hover {
 	animation: rainbow 10s infinite;
-  	animation-fill-mode: forwards;
+	animation-fill-mode: forwards;
 	cursor: hand;
 }
 
- .mastermind img{
+.mastermind img {
 	display: none;
 	position: absolute;
 	width: 58px;
- }
-  .colours{
- 	position: relative;
- 	margin:0 auto;
- 	margin-top: 25px;
- 	width: 550px;
- 	height: 60px;
- }
+}
 
- #table{
+#table {
 	position: relative;
- 	display: block;
- 	margin:0 auto;
- 	width: 400px;
- }
-
- #colour_table{
- 	display: block;
- 	margin:0 auto;
- 	width: 550px;
- 	height: 60px;
- }
-
-
- span {
-    position: absolute;
-    border:2px solid black;    
-    border-radius:50%;
-    -moz-border-radius:50%;
-    -webkit-border-radius:50%;
-    width:33px;
-    height:33px;
+	display: block;
+	margin: 0 auto;
+	width: 400px;
 }
 
-#block_circles-1 span,#block_circles-2 span,#block_circles-3 span,
-#block_circles-4 span,#block_circles-5 span,#block_circles-6 span,
-#block_circles-7 span,#block_circles-8 span,#block_circles-9 span,
-#block_circles-10 span{
-	width:11px;
-	height:11px;
-	border:1px solid black;  
+/*		Colour Table	*/
+.colours {
+	position: relative;
+	margin: 0 auto;
+	margin-top: 25px;
+	width: 550px;
+	height: 60px;
 }
 
-#block_circles-1,#block_circles-2,#block_circles-3,
-#block_circles-4,#block_circles-5,#block_circles-6,
-#block_circles-7,#block_circles-8,#block_circles-9,
-#block_circles-10{
+#colour_table {
+	display: block;
+	margin: 0 auto;
+	width: 550px;
+	height: 60px;
+}
+
+/*		Opponent	*/
+
+.opponent {
+	position: relative;
+	float: right;
+	width: 268px;
+	height: 427px;
+	margin-right: 100px;
+	margin-top: 100px;
+}
+
+.opponent img {
+	width: 268px;
+	height: 427px;
+}
+
+.opponent p {
+	border-radius: 5px;
+	border: 2px solid black;
+	padding: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+	background-color: #AFABAB;
+	font-size: 20px;
+	font-family: 'Roboto', sans-serif;
+	position: absolute;
+	top: -50px;
+	left: 20px;
+	color: black;
+}
+
+.opponent p:hover {
+	animation: rainbow 10s infinite;
+	cursor: default;
+}
+
+.opponent span {
+	width: 25px;
+	height: 25px;
+}
+
+/*		Circles		*/
+span {
+	position: absolute;
+	border: 2px solid black;
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	width: 33px;
+	height: 33px;
+}
+
+#block_circles-1 span,
+#block_circles-2 span,
+#block_circles-3 span,
+#block_circles-4 span,
+#block_circles-5 span,
+#block_circles-6 span,
+#block_circles-7 span,
+#block_circles-8 span,
+#block_circles-9 span,
+#block_circles-10 span {
+	width: 11px;
+	height: 11px;
+	border: 1px solid black;
+}
+
+#block_circles-1,
+#block_circles-2,
+#block_circles-3,
+#block_circles-4,
+#block_circles-5,
+#block_circles-6,
+#block_circles-7,
+#block_circles-8,
+#block_circles-9,
+#block_circles-10 {
 	display: none;
 }
-#button-9{
-	display: block;
-}
-#block-10{
+
+#button-9 {
 	display: block;
 }
 
-#block_circles-10{
+#block-10 {
 	display: block;
 }
 
-#block_circles-10 span{
+#block_circles-10 {
 	display: block;
 }
 
-#small_circle-10-1{
+#block_circles-10 span {
+	display: block;
+}
+
+#small_circle-10-1 {
 	background-color: white;
 }
-#small_circle-10-2{
+
+#small_circle-10-2 {
 	background-color: red;
 }
 
+/*		Rainbow Animation		*/
 @keyframes rainbow {
 	15% {
-	  background: #FF0000;
+		background: #FF0000;
 	}
+
 	30% {
-	  background: #ED7D31;
+		background: #ED7D31;
 	}
+
 	45% {
-	  background: #FFFF00;
+		background: #FFFF00;
 	}
+
 	60% {
-	  background: #00B050;
+		background: #00B050;
 	}
+
 	75% {
 		background: #00B0F0;
-	  }
+	}
+
 	100% {
 		background: #7030A0;
 	}
-  }
+}
