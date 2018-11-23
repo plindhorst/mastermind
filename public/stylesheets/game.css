@@ -9,7 +9,7 @@ body {
 	background-color: rgb(112, 112, 112);
 }
 
-/*		Game Duration	 */
+/*    Game Duration    */
 #time {
 	font-family: 'Roboto', sans-serif;
 	color: rgb(220, 220, 220);
@@ -18,12 +18,11 @@ body {
 	left: 15;
 }
 
-/*		Buttons		*/
+/*    Buttons    */
 .buttons {
 	margin: 10px;
 	width: 30px;
 }
-
 
 #exit,
 #new {
@@ -48,7 +47,7 @@ body {
 	left: 10px;
 }
 
-/*		Mastermind Table		*/
+/*    Mastermind Table    */
 .mastermind {
 	position: relative;
 	margin: 0 auto;
@@ -84,13 +83,13 @@ body {
 }
 
 #table {
-	position: relative;
+	left: 75;
 	display: block;
 	margin: 0 auto;
 	width: 400px;
 }
 
-/*		Colour Table	*/
+/*    Colour Table    */
 .colours {
 	position: relative;
 	margin: 0 auto;
@@ -106,18 +105,28 @@ body {
 	height: 60px;
 }
 
-/*		Opponent	*/
+/*    Opponent    */
 
 .opponent {
 	position: relative;
 	float: right;
 	width: 268px;
 	height: 427px;
-	margin-right: 100px;
+	margin-right: 150px;
 	margin-top: 100px;
 }
 
 .opponent img {
+	display: none;
+	position: absolute;
+	width: 38px;
+	height: 38px;
+}
+
+
+#oppponent-table {
+	display: block;
+	position: relative;
 	width: 268px;
 	height: 427px;
 }
@@ -147,7 +156,7 @@ body {
 	height: 25px;
 }
 
-/*		Circles		*/
+/*    Circles    */
 span {
 	position: absolute;
 	border: 2px solid black;
@@ -158,59 +167,28 @@ span {
 	height: 33px;
 }
 
-#block_circles-1 span,
-#block_circles-2 span,
-#block_circles-3 span,
-#block_circles-4 span,
-#block_circles-5 span,
-#block_circles-6 span,
-#block_circles-7 span,
-#block_circles-8 span,
-#block_circles-9 span,
-#block_circles-10 span {
+
+.block_circles span {
 	width: 11px;
 	height: 11px;
 	border: 1px solid black;
 }
 
-#block_circles-1,
-#block_circles-2,
-#block_circles-3,
-#block_circles-4,
-#block_circles-5,
-#block_circles-6,
-#block_circles-7,
-#block_circles-8,
-#block_circles-9,
-#block_circles-10 {
+
+.opponent-block_circles span {
+	width: 9px;
+	height: 9px;
+	border: 1px solid black;
+}
+
+.opponent-block_circles,
+.block_circles {
 	display: none;
 }
 
-#button-9 {
-	display: block;
-}
 
-#block-10 {
-	display: block;
-}
 
-#block_circles-10 {
-	display: block;
-}
-
-#block_circles-10 span {
-	display: block;
-}
-
-#small_circle-10-1 {
-	background-color: white;
-}
-
-#small_circle-10-2 {
-	background-color: red;
-}
-
-/*		Rainbow Animation		*/
+/*    Rainbow Animation    */
 @keyframes rainbow {
 	15% {
 		background: #FF0000;
@@ -234,5 +212,23 @@ span {
 
 	100% {
 		background: #7030A0;
+	}
+}
+
+/*    Screen Adjustements    */
+
+@media screen and (max-width: 1415px) {
+	.opponent {
+		position: absolute;
+		left: 41%;
+		top: 800px;
+		margin-bottom: 50px;
+	}
+
+	#time {
+		position: relative;
+		float: right;
+
+		margin-right: 25px;
 	}
 }

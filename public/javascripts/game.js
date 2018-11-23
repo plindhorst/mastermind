@@ -19,7 +19,7 @@ function draw_opponent_colours() {
 }
 
 function draw_opponent_table() {
-	var y = 61;
+	var y = 60.5;
 	var x;
 	for (n = 1; n <= 10; n++) {
 		x = 33;
@@ -31,6 +31,37 @@ function draw_opponent_table() {
 			circle.id = "opponent-circle-" + n + "-" + i;
 			document.getElementById('opponent').appendChild(circle);
 			x += 58;
+		}
+		// create block
+		var block = document.createElement("IMG");
+		block.style.top = (y - 5) + 'px';
+		block.style.left = '285px';
+		block.id = "opponent-block-" + n;
+		block.setAttribute("src", "images/block.png");
+		document.getElementById('opponent').appendChild(block);
+		//create small circles box
+		var div = document.createElement("div");
+		div.id = "opponent-block_circles-" + n;
+		div.className = "opponent-block_circles";
+		div.style.top = (y - 5) + 'px';
+		div.style.left = '285px';
+		document.getElementById('opponent').appendChild(div);
+		//create small circles
+		var x_ = 290;
+		for (i = 1; i <= 2; i++) {
+			var small_circle = document.createElement("span");
+			small_circle.style.top = y + 'px';
+			small_circle.style.left = x_ + 'px';
+			small_circle.id = "opponent-small_circle-" + n + "-" + i;
+			document.getElementById("opponent-block_circles-" + n).appendChild(small_circle);
+			for (j = 1; j <= 2; j++) {
+				var small_circle = document.createElement("span");
+				small_circle.style.top = (y + 18) + 'px';
+				small_circle.style.left = x_ + 'px';
+				small_circle.id = "small_circle-" + n + "-" + (i + 2);
+				document.getElementById("opponent-block_circles-" + n).appendChild(small_circle);
+			}
+			x_ += 18;
 		}
 		y += 37;
 	}
@@ -75,6 +106,7 @@ function draw_table() {
 		//create small circles box
 		var div = document.createElement("div");
 		div.id = "block_circles-" + n;
+		div.className = "block_circles";
 		div.style.top = (y - 10) + 'px';
 		div.style.left = '500px';
 		document.getElementById('mastermind').appendChild(div);
@@ -118,7 +150,7 @@ function rgb2hex(rgb) {
 
 
 
-/* #####	Events		#### */
+// #####    UI Events    ####
 
 
 
