@@ -1,0 +1,98 @@
+@font-face{
+    src: url(fonts/PermanentMarker-Regular.ttf);
+    font-family: marker;
+}
+
+@font-face{
+    src: url(fonts/LuckiestGuy-Regular.ttf);
+    font-family: guy;
+}
+
+.buttons{
+    height: 120px;
+    width: 300px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+
+body{
+
+    background-color: rgb(112,112,112);
+}
+#one{
+        margin: 8px;
+        height: 20px;
+        text-align: center;
+        background-color: darkorange;
+        padding: 30px;
+        grid-column-gap: 5px;
+        grid-row-gap: 10px;
+        font-family: marker; 
+        font-size: 24px;
+        font-style: normal; 
+        font-variant: normal; 
+        font-weight: normal; 
+        line-height: 8px;
+        color: white;
+        border-radius: 10px;
+        
+}
+#two{
+    margin: 8px;
+    height:20px;
+    text-align: center;
+    background-color: rgb(108, 174, 17);
+    padding: 30px;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+    font-family: marker; 
+    font-size: 24px;
+    font-style: normal; 
+    font-variant: normal; 
+    font-weight: normal; 
+    line-height: 8px;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 5px;
+}
+#three{
+    margin: 8px;
+    height:20px;
+    text-align: center;
+    background-color: rgb(91, 129, 199);
+    padding: 30px;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+    font-family: marker; 
+    font-size: 24px;
+    font-style: normal; 
+    font-variant: normal; 
+    font-weight: normal; 
+    line-height: 8px;
+    color: white;
+    border-radius: 10px;
+}
+.statistics{
+    text-align: left;
+    position: absolute;
+    font-family: guy;
+    font-size: 20px;
+    color: white;
+    bottom: -15;
+    left: 10;
+    right: 10;
+}
+
+#queue {
+
+    text-align: right;
+}
+.Logo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+
+}
