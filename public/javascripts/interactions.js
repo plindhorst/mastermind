@@ -1,9 +1,89 @@
 var colours = ["#FF0000", "#ED7D31", "#FFFF00", "#00B050", "#00B0F0", "#0070C0", "#7030A0", "#FFFFFF"];
 var selected_colour = "";
-draw_colours();
-draw_table();
-draw_opponent_table();
-draw_opponent_colours();
+
+
+(function setup(){
+    draw_colours();
+    draw_table();
+    draw_opponent_table();
+    draw_opponent_colours();
+
+    var socket = new WebSocket("ws://localhost:3000");
+				
+	var gs = new GameState(socket);
+
+    socket.onmessage = function (event) {
+		
+		let incomingMsg = JSON.parse(event.data);
+        if (incomingMsg.type == "PLAYER-TYPE") {
+            if (incomingMsg.data == "A") {
+				gs.setPlayerType("A");
+				let outgoingMsg = {
+					type: "COLOUR-A",
+					colour: "red"
+				};
+				socket.send(JSON.stringify(outgoingMsg));
+			}
+			else{
+				gs.setPlayerType("B");
+				let outgoingMsg = {
+					type: "COLOUR-B",
+					colour: "yellow"
+				};
+				socket.send(JSON.stringify(outgoingMsg));
+			}
+		}
+		if (incomingMsg.type == "OPPONENT-COLOUR") {
+			gs.setOpponentColour(incomingMsg.colour);
+			alert(gs.getOpponentColour());
+		}
+    };
+    
+    //server sends a close event only if the game was aborted from some side
+    socket.onclose = function(){
+
+    };
+
+    socket.onerror = function(){  
+    };
+})(); //execute immediately
+
+
+/* basic constructor of game state */
+function GameState(socket){
+
+    this.playerType = null;
+    this.Guesses = 0;
+    this.opponentColour = null;
+
+    this.getPlayerType = function () {
+        return this.playerType;
+    };
+
+    this.setPlayerType = function (p) {
+        this.playerType = p;
+    };
+
+    this.setOpponentColour = function (w) {
+        this.opponentColour = w;
+	};
+	
+	this.getOpponentColour = function () {
+        return this.opponentColour;
+    };
+
+    this.incrGuesses = function(){
+        this.Guesses++;
+        if(this.Guesses > 10){
+            //lose
+        }
+    };
+
+    this.updateGame = function(clickedLetter){
+
+    };
+}
+
 
 function draw_opponent_colours() {
 	var y = 12;
