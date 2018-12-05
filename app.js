@@ -56,49 +56,131 @@ wss.on("connection", function connection(ws) {
 
     if (currentGame.hasTwoConnectedPlayers()) {
         currentGame = new Game(GameStats.gamesInitialized++);
-
+        sendTo(gameObj.playerA, "STATUS", "Second player has joined the game.");
     }
 
     con.on("message", function incoming(message) {
-
-
         let Msg = JSON.parse(message);
-        if (Msg.type == "COLOUR-A") {
-            gameObj.A_Colour = Msg.colour;
-            sendColours();
-        } else if (Msg.type == "COLOUR-B") {
-            gameObj.B_Colour = Msg.colour;
-            sendColours();
+        
+        if (Msg.type == "COLOUR") {
+            if (Msg.playerType == "A") {
+                gameObj.A_Colour = Msg.data;
+                console.log("Player A Chose Code: " + gameObj.A_Colour);
+                if (gameObj.playerB != null) { // check if player B is connected
+                    sendTo(gameObj.playerB, "STATUS", "Other player has chosen his code.");
+                
+            }
+            } else if (Msg.playerType == "B") {
+                gameObj.B_Colour = Msg.data;
+                console.log("Player B Chose Code: " + gameObj.B_Colour);
+                sendTo(gameObj.playerA, "STATUS", "Other player has chosen his code.");
+            }
+            drawGame(); //start the game if both players have chosen codes
         }
-        console.log("A: " + gameObj.A_Colour);
-        console.log("B: " + gameObj.B_Colour);
+
+        if (Msg.type == "GUESS") {
+            if (Msg.playerType == "A") {
+                if (Msg.data==gameObj.B_Colour) {
+                    // A won
+                    sendTo(gameObj.playerA, "GUESS", [4,0]);
+                    console.log("Player A Won!");
+                }
+                else{
+                    var red=getRedPegs(Msg.data,gameObj.B_Colour);
+                    var white=getWhitePegs(Msg.data,gameObj.B_Colour);
+                    var result=[red, white];
+                    sendTo(gameObj.playerA, "GUESS", result);
+                    sendTo(gameObj.playerB, "OPPONENT-GUESS", result);
+                    console.log("Player A Guessed: " + Msg.data+" R("+red+")" +" W("+white+")");
+                }
+
+            } else if (Msg.playerType == "B") {
+                if (Msg.data==gameObj.A_Colour) {
+                    // B won
+                    sendTo(gameObj.playerB, "GUESS", [4,0]);
+                    console.log("Player B Won!");
+                }
+                else{
+                    var red=getRedPegs(Msg.data,gameObj.A_Colour);
+                    var white=getWhitePegs(Msg.data,gameObj.A_Colour);
+                    var result=[red, white];
+                    sendTo(gameObj.playerB, "GUESS", result);
+                    sendTo(gameObj.playerA, "OPPONENT-GUESS", result);
+                    console.log("Player B Guessed: " + Msg.data+" R("+red+")" +" W("+white+")");
+                }
+            }
+        }
+        
     });
 
     con.on("close", function (code) {
-        console.log(con.id + " disconnected ...");
+        console.log("Player "+con.id + " disconnected.");
         if (code == "1001") {
             gameObj.gameState = "COMPLETED";
             GameStats.gamesCompleted++;
         }
     });
 
-    function sendColours() {
+    
+    function drawGame() {
         // Check if both players have selected colours
-        // and send to opponent
+        // aif yes, then start the game
         if (gameObj.A_Colour != null && gameObj.B_Colour != null) {
-            let opponentColour = {
-                type: "OPPONENT-COLOUR",
-                colour: gameObj.B_Colour
-            };
-            gameObj.playerA.send(JSON.stringify(opponentColour));
-
-            opponentColour = {
-                type: "OPPONENT-COLOUR",
-                colour: gameObj.A_Colour
-            };
-            gameObj.playerB.send(JSON.stringify(opponentColour));
+            sendTo(gameObj.playerA, "DRAW-GAME", null);
+            sendTo(gameObj.playerB, "DRAW-GAME", null);
         }
     };
 });
 
 server.listen(3000);
+
+function sendTo(to,type,data) {
+    let msg = {
+        type: type,
+        data: data
+    };
+    to.send(JSON.stringify(msg));
+};
+
+function getRedPegs(guess, answer) {
+    var correct = 0;
+    var red = 0;
+    var white = 0;
+    var used = [false, false, false, false];
+
+    // get red
+    for (let i = 0; i < 4; i++) {
+        if (guess.charAt(i) == answer.charAt(i)) {
+            red++;
+            used[i] = true;
+        }
+    }
+
+    return red;
+}
+
+function getWhitePegs(guess, answer) {
+    var correct = 0;
+    var white = 0;
+
+
+    var used = [false, false, false, false];
+
+    // get white
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (used[j]) {
+                continue;
+            };
+
+            if (guess.charAt(i) == answer.charAt(j)) {
+                white++;
+                used[j] = true;
+                break;
+            }
+        }
+    }
+
+    return white;
+
+};

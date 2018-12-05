@@ -1,98 +1,254 @@
 var colours = ["#FF0000", "#ED7D31", "#FFFF00", "#00B050", "#00B0F0", "#0070C0", "#7030A0", "#FFFFFF"];
 var selected_colour = "";
+draw_queue_code();
+draw_queue_colours();
+Queue_UI();
 
+var socket = new WebSocket("ws://localhost:3000");
+var gs = new GameState();
 
 (function setup(){
-    draw_colours();
-    draw_table();
-    draw_opponent_table();
-    draw_opponent_colours();
-
-    var socket = new WebSocket("ws://localhost:3000");
-				
-	var gs = new GameState(socket);
+    
 
     socket.onmessage = function (event) {
 		
 		let incomingMsg = JSON.parse(event.data);
         if (incomingMsg.type == "PLAYER-TYPE") {
             if (incomingMsg.data == "A") {
-				gs.setPlayerType("A");
-				let outgoingMsg = {
-					type: "COLOUR-A",
-					colour: "red"
-				};
-				socket.send(JSON.stringify(outgoingMsg));
+				gs.playerType="A";
+				gs.state="Waiting for other player...";
+				update_status();
 			}
 			else{
-				gs.setPlayerType("B");
-				let outgoingMsg = {
-					type: "COLOUR-B",
-					colour: "yellow"
-				};
-				socket.send(JSON.stringify(outgoingMsg));
+				gs.playerType="B";
+				gs.state="You joined a game.";
+				update_status();
 			}
 		}
-		if (incomingMsg.type == "OPPONENT-COLOUR") {
-			gs.setOpponentColour(incomingMsg.colour);
-			alert(gs.getOpponentColour());
+		if (incomingMsg.type == "DRAW-GAME") {
+			gs.state+="<br>Game drawn.";
+			update_status();
+			draw_game();
 		}
-    };
-    
-    //server sends a close event only if the game was aborted from some side
-    socket.onclose = function(){
-
-    };
-
-    socket.onerror = function(){  
+		if (incomingMsg.type == "STATUS") {
+			gs.state+="<br>"+incomingMsg.data;
+			update_status();
+		}
+		if (incomingMsg.type == "GUESS") {
+			var red = incomingMsg.data[0];
+			var white = incomingMsg.data[1];
+			gs.state+="<br>red("+red+") white("+white+") Guesses Remaining: "+gs.Guesses;
+			update_guesses(red,white);
+			update_status();
+		}
+		if (incomingMsg.type == "OPPONENT-GUESS") {
+			alert();
+			gs.decrOpponentGuesses();
+			var red = incomingMsg.data[0];
+			var white = incomingMsg.data[1];
+			gs.state+="<br>Opponent guessed. red("+red+") white("+white+") Remaining: "+gs.OpponentGuesses;
+			update_opponent_guesses(red,white);
+			update_status();
+		}
     };
 })(); //execute immediately
 
 
 /* basic constructor of game state */
-function GameState(socket){
+function GameState(){
 
     this.playerType = null;
-    this.Guesses = 0;
-    this.opponentColour = null;
+	this.Guesses = 10;
+	this.OpponentGuesses = 10;
+	this.opponentColour = null;
+	this.state=null;
 
-    this.getPlayerType = function () {
-        return this.playerType;
-    };
-
-    this.setPlayerType = function (p) {
-        this.playerType = p;
-    };
-
-    this.setOpponentColour = function (w) {
-        this.opponentColour = w;
-	};
-	
-	this.getOpponentColour = function () {
-        return this.opponentColour;
-    };
-
-    this.incrGuesses = function(){
-        this.Guesses++;
+    this.decrGuesses = function(){
+		this.Guesses--;
+		update_buttons();
+		update_status();
         if(this.Guesses > 10){
             //lose
         }
-    };
+	};
+	this.decrOpponentGuesses = function(){
+		this.OpponentGuesses--;
+	};
+	
+}
+function update_status() {
+	document.getElementById('status').innerHTML=gs.state;
+};
+function update_guesses(red,white) {
+	document.getElementById('block-'+(gs.Guesses+1)).style.display="block";
+	document.getElementById('block_circles-'+(gs.Guesses+1)).style.display="block";
+	// draw red and white pegs
+	var used=[false,false,false,false];
+	// set first red pegs
+	for (let i = 1; i <= red; i++) {
+		document.getElementById('small_circle-'+(gs.Guesses+1)+"-"+i).style.backgroundColor="red";
+		used[i-1]=true;
+	}
+	// set second white pegs
+	for (let i = 1; i <= (white+red); i++) {
+		if (!used[i-1]) {
+			document.getElementById('small_circle-'+(gs.Guesses+1)+"-"+i).style.backgroundColor="white";
+		}
+	}
+};
+function update_opponent_guesses(red,white) {
+	document.getElementById('opponent_block-'+(gs.OpponentGuesses+1)).style.display="block";
+	document.getElementById('opponent_block_circles-'+(gs.OpponentGuesses+1)).style.display="block";
+	// draw red and white pegs
+	var used=[false,false,false,false];
+	// set first red pegs
+	for (let i = 1; i <= red; i++) {
+		document.getElementById('opponent_small_circle-'+(gs.OpponentGuesses+1)+"-"+i).style.backgroundColor="red";
+		used[i-1]=true;
+	}
+	// set second white pegs
+	for (let i = 1; i <= (white+red); i++) {
+		if (!used[i-1]) {
+			document.getElementById('opponent_small_circle-'+(gs.OpponentGuesses+1)+"-"+i).style.backgroundColor="white";
+		}
+	}
+};
+function update_buttons() {	
+	document.getElementById('button-'+gs.Guesses).style.display="block";
+};
 
-    this.updateGame = function(clickedLetter){
-
-    };
+function draw_game() {
+	document.body.style.cursor="default"; //reset pointer
+	selected_colour = ""; // reset selected colour
+	document.getElementById('game').style.display = "inline";
+	document.getElementById('queue').style.display = "none";
+	draw_colours();
+	draw_table();
+	draw_opponent_table();
+	draw_opponent_colours();
+	Game_UI();
+	update_buttons();
 }
 
-
-function draw_opponent_colours() {
+function draw_queue_code() {
 	var y = 12;
-	var x = 33;
+	var x = 318;
 	for (i = 1; i <= 4; i++) {
 		var circle = document.createElement("span");
 		circle.style.top = y + 'px';
 		circle.style.left = x + 'px';
-		circle.id = "opponent_circle_colour" + i;
+		circle.id = "selected_circle_colour" + i;
+		document.getElementById('queue_colours_code').appendChild(circle);
+		x += 58;
+	}
+}
+
+function draw_queue_colours() {
+	var y = 252;
+	var x = 27;
+	for (i = 1; i <= 8; i++) {
+		var colour = colours[i - 1];
+		var circle = document.createElement("span");
+		circle.style.top = y + 'px';
+		circle.style.left = x + 'px';
+		circle.id = "queue_circle_colour" + i;
+		circle.class = "queue_colour_circles";
+		circle.style.backgroundColor = colour;
+		document.getElementById('queue_colours_table').appendChild(circle);
+		x += 65;
+	}
+}
+
+function Queue_UI() {
+	// Get selected colours
+	$(".selected_colours button").click(function () {
+		var code = [null,null,null,null];
+		var err_count=0;
+		for (i = 0; i < code.length; i++) {
+			var circle = document.getElementById("selected_circle_colour" + (i+1));
+			
+			if (colours.includes("#"+rgb2hex(circle.style.backgroundColor))) { //check if colour is valid
+				code[i]=rgb2hex(circle.style.backgroundColor);
+			}
+			else{
+				err_count++;
+			}
+		}
+		if (err_count>0) {
+			alert("Not a valid code!"); // change popup
+		}
+		else{ // convert colours to code
+			gs.MyColour=colour2Code(code);
+			//send to server	
+			send2Server("COLOUR", gs.MyColour);
+			// hide some elements
+			document.getElementById("select").innerHTML="Colour Code Confirmed.";
+			document.getElementById("select").disabled = true;
+			document.getElementById("queue_colours_table").style.display = "none";
+		}
+	});
+
+	// Change background of circle when clicked
+	$(".queue_colours_code span").click(function () {
+		$(this).css("background-color", selected_colour);
+	});
+	
+	// Make circle border bigger when clicked
+	$(".queue_colours_table span").click(function () {
+		for (i = 1; i <= 8; i++) {
+			var d = document.getElementById('queue_circle_colour' + i);
+			var p = $('#queue_circle_colour' + i);
+			var position = p.position();
+			if (d.style.border == "5px solid black") {
+				d.style.border = "2px solid black";
+				var x = position.top + 4;
+				var left = position.left + 4;
+				d.style.top = x + 'px';
+				d.style.left = left + 'px';
+			}
+		}
+		var p = $(this).position();
+		selected_colour = rgb2hex($(this).css("background-color"));
+		document.body.style.cursor = 'url("images/cursors/' + selected_colour + '.png"), auto';
+		$(this).css({
+			'top': p.top - 4,
+			'left': p.left - 4,
+			'border': '5px solid black',
+		});
+	});
+	// Make circle bigger when mouse enters
+	$(".queue_colours_table span").mouseenter(function () {
+		var p = $(this).position();
+
+		$(this).css({
+			'top': p.top - 1,
+			'left': p.left - 1,
+			'width': '35px',
+			'height': '35px'
+		});
+	});
+	// Make circle smaller when mouse leaves
+	$(".queue_colours_table span").mouseleave(function () {
+		var p = $(this).position();
+		$(this).css({
+			'top': p.top + 1,
+			'left': p.left + 1,
+			'width': '33px',
+			'height': '33px'
+		});
+	});
+}
+
+function draw_opponent_colours() {
+	var y = 12;
+	var x = 33;
+	var colours=code2Colour(gs.MyColour);
+	for (i = 0; i < colours.length; i++) {
+		var circle = document.createElement("span");
+		circle.style.top = y + 'px';
+		circle.style.left = x + 'px';
+		circle.id = "opponent_circle_colour" + (i+1);
+		circle.style.backgroundColor=colours[i];
 		document.getElementById('opponent').appendChild(circle);
 		x += 58;
 	}
@@ -108,7 +264,7 @@ function draw_opponent_table() {
 			var circle = document.createElement("span");
 			circle.style.top = y + 'px';
 			circle.style.left = x + 'px';
-			circle.id = "opponent-circle-" + n + "-" + i;
+			circle.id = "opponent_circle-" + n + "-" + i;
 			document.getElementById('opponent').appendChild(circle);
 			x += 58;
 		}
@@ -116,13 +272,13 @@ function draw_opponent_table() {
 		var block = document.createElement("IMG");
 		block.style.top = (y - 5) + 'px';
 		block.style.left = '285px';
-		block.id = "opponent-block-" + n;
+		block.id = "opponent_block-" + n;
 		block.setAttribute("src", "images/block.png");
 		document.getElementById('opponent').appendChild(block);
 		//create small circles box
 		var div = document.createElement("div");
-		div.id = "opponent-block_circles-" + n;
-		div.className = "opponent-block_circles";
+		div.id = "opponent_block_circles-" + n;
+		div.className = "opponent_block_circles";
 		div.style.top = (y - 5) + 'px';
 		div.style.left = '285px';
 		document.getElementById('opponent').appendChild(div);
@@ -132,15 +288,15 @@ function draw_opponent_table() {
 			var small_circle = document.createElement("span");
 			small_circle.style.top = y + 'px';
 			small_circle.style.left = x_ + 'px';
-			small_circle.id = "opponent-small_circle-" + n + "-" + i;
-			document.getElementById("opponent-block_circles-" + n).appendChild(small_circle);
-			for (j = 1; j <= 2; j++) {
-				var small_circle = document.createElement("span");
-				small_circle.style.top = (y + 18) + 'px';
-				small_circle.style.left = x_ + 'px';
-				small_circle.id = "small_circle-" + n + "-" + (i + 2);
-				document.getElementById("opponent-block_circles-" + n).appendChild(small_circle);
-			}
+			small_circle.id = "opponent_small_circle-" + n + "-" + i;
+			document.getElementById("opponent_block_circles-" + n).appendChild(small_circle);
+			
+			var small_circle2 = document.createElement("span");
+			small_circle2.style.top = (y + 18) + 'px';
+			small_circle2.style.left = x_ + 'px';
+			small_circle2.id = "opponent_small_circle-" + n + "-" + (i + 2);
+			document.getElementById("opponent_block_circles-" + n).appendChild(small_circle2);
+			
 			x_ += 18;
 		}
 		y += 37;
@@ -193,18 +349,18 @@ function draw_table() {
 		//create small circles
 		var x_ = 510;
 		for (i = 1; i <= 2; i++) {
+			// draw smallcircle 1
 			var small_circle = document.createElement("span");
 			small_circle.style.top = y + 'px';
 			small_circle.style.left = x_ + 'px';
 			small_circle.id = "small_circle-" + n + "-" + i;
 			document.getElementById("block_circles-" + n).appendChild(small_circle);
-			for (j = 1; j <= 2; j++) {
-				var small_circle = document.createElement("span");
-				small_circle.style.top = (y + 25) + 'px';
-				small_circle.style.left = x_ + 'px';
-				small_circle.id = "small_circle-" + n + "-" + (i + 2);
-				document.getElementById("block_circles-" + n).appendChild(small_circle);
-			}
+			// draw smallcircle 2
+			var small_circle2 = document.createElement("span");
+			small_circle2.style.top = (y + 25) + 'px';
+			small_circle2.style.left = x_ + 'px';
+			small_circle2.id = "small_circle-" + n + "-" + (i + 2);
+			document.getElementById("block_circles-" + n).appendChild(small_circle2);
 			x_ += 25;
 		}
 		// create button
@@ -219,72 +375,121 @@ function draw_table() {
 }
 
 function rgb2hex(rgb) {
-	rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-
-	function hex(x) {
-		return ("0" + parseInt(x).toString(16)).slice(-2);
+	if (rgb=="") {
+		return null;
 	}
-	return (hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])).toUpperCase();
+	else{
+		rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+
+		function hex(x) {
+			return ("0" + parseInt(x).toString(16)).slice(-2);
+		}
+		return (hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])).toUpperCase();
+	}
 }
-
-
-
-
-// #####    UI Events    ####
-
-
-
-// Change background of circle when clicked
-$(".mastermind span").click(function () {
-	$(this).css("background-color", selected_colour);
-});
-
-
-// Make circle border bigger when clicked
-$(".colours span").click(function () {
-	for (i = 1; i <= 8; i++) {
-		var d = document.getElementById('circle_colour' + i);
-		var p = $('#circle_colour' + i);
-		var position = p.position();
-		if (d.style.border == "5px solid black") {
-			d.style.border = "2px solid black";
-			var x = position.top + 4;
-			var left = position.left + 4;
-			d.style.top = x + 'px';
-			d.style.left = left + 'px';
+function colour2Code(colour_arr) {
+	var code = "";
+	for (i = 0; i < colour_arr.length; i++) {
+		if (colour_arr[i]!=null && colours.includes("#"+colour_arr[i])) {
+			code+=colours.indexOf("#"+colour_arr[i]);
 		}
 	}
-	var p = $(this).position();
-	selected_colour = rgb2hex($(this).css("background-color"));
-	document.body.style.cursor = 'url("images/cursors/' + selected_colour + '.png"), auto';
+	return code;
 
-	$(this).css({
-		'top': p.top - 4,
-		'left': p.left - 4,
-		'border': '5px solid black',
+}
+function code2Colour(code) {
+	var colourarr = Array(4);
+	for (i = 0; i < colourarr.length; i++) {
+		colourarr[i]=colours[code.charAt(i)];
+	}
+	return colourarr;
+}
+function Game_UI() {
+	// Change background of circle when clicked
+	$(".mastermind span").click(function () {
+		$(this).css("background-color", selected_colour);
 	});
-});
 
-// Make circle bigger when mouse enters
-$(".colours span").mouseenter(function () {
-	//$(this).css('cursor', 'hand');
-	var p = $(this).position();
-
-	$(this).css({
-		'top': p.top - 1,
-		'left': p.left - 1,
-		'width': '35px',
-		'height': '35px'
+	// check button is pressed
+	$(".mastermind button").click(function () {
+		var attempt_code = [null,null,null,null];
+		var err_count=0;
+		var attempt=gs.Guesses;
+		for (i = 0; i < attempt_code.length; i++) {
+			var circle = document.getElementById("circle-" +attempt+"-"+(i+1));
+			
+			if (colours.includes("#"+rgb2hex(circle.style.backgroundColor))) { //check if colour is valid
+				attempt_code[i]=rgb2hex(circle.style.backgroundColor);
+			}
+			else{
+				err_count++;
+			}
+		}
+		if (err_count>0) {
+			alert("Not a valid code!"); // change popup
+		}
+		else{ // convert colours to code
+			$(this).css('display', 'none');
+			gs.decrGuesses();
+			//send to server
+			send2Server("GUESS", colour2Code(attempt_code));
+		}
 	});
-});
 
-// Make circle smaller when mouse leaves
-$(".colours span").mouseleave(function () {
-	var p = $(this).position();
-	$(this).css({
-		'top': p.top + 1,
-		'left': p.left + 1,
-		'width': '33px',
-		'height': '33px'
+	// Make circle border bigger when clicked
+	$(".colours span").click(function () {
+		for (i = 1; i <= 8; i++) {
+			var d = document.getElementById('circle_colour' + i);
+			var p = $('#circle_colour' + i);
+			var position = p.position();
+			if (d.style.border == "5px solid black") {
+				d.style.border = "2px solid black";
+				var x = position.top + 4;
+				var left = position.left + 4;
+				d.style.top = x + 'px';
+				d.style.left = left + 'px';
+			}
+		}
+		var p = $(this).position();
+		selected_colour = rgb2hex($(this).css("background-color"));
+		document.body.style.cursor = 'url("images/cursors/' + selected_colour + '.png"), auto';
+
+		$(this).css({
+			'top': p.top - 4,
+			'left': p.left - 4,
+			'border': '5px solid black',
+		});
 	});
-});
+
+	// Make circle bigger when mouse enters
+	$(".colours span").mouseenter(function () {
+		//$(this).css('cursor', 'hand');
+		var p = $(this).position();
+
+		$(this).css({
+			'top': p.top - 1,
+			'left': p.left - 1,
+			'width': '35px',
+			'height': '35px'
+		});
+	});
+
+	// Make circle smaller when mouse leaves
+	$(".colours span").mouseleave(function () {
+		var p = $(this).position();
+		$(this).css({
+			'top': p.top + 1,
+			'left': p.left + 1,
+			'width': '33px',
+			'height': '33px'
+		});
+	});
+}
+function send2Server(type, data) {
+	let outgoingMsg = {
+		type: type,
+		playerType: gs.playerType,
+		data: data
+	};
+	socket.send(JSON.stringify(outgoingMsg));
+};

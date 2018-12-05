@@ -8,22 +8,42 @@
 </head>
 
 <body>
-	<p id="time">Game duration: 1:03</p>
-	<div class="buttons">
-		<img id="exit" src="images/exit.png"> <!-- add tooltips -->
-		<img id="new" src="images/new.png">
-	</div>
-	<div class="opponent" id="opponent">
-		<p>Opponent's Progress:</p>
-		<img id="oppponent-table" src="images/opponent.png">
-	</div>
-	<div class="mastermind" id="mastermind">
-		<img id="table" src="images/table.png">
+		<div class="buttons">
+				<img id="exit" src="images/exit.png"> <!-- add tooltips -->
+				<img id="new" src="images/new.png">
+		</div>
+		<p id="status"></p>
+	<div class="game" id="game">
+			<p id="time">Game duration: 1:03</p>
+			
+			<div class="opponent" id="opponent">
+				<p>Opponent's Progress:</p>
+				<img id="oppponent-table" src="images/opponent.png">
+			</div>
+			<div class="mastermind" id="mastermind">
+				<img id="table" src="images/table.png">
+			</div>
+		
+			<div class="colours" id="colours">
+				<img id="colour_table" src="images/colour_table.png">
+			</div>
 	</div>
 
-	<div class="colours" id="colours">
-		<img id="colour_table" src="images/colour_table.png">
+<div class="queue" id="queue">
+	<div class="selected_colours" id="selected_colours">
+		<button id="select">Confirm Colour Code</button>
+		<div class="queue_colours_code" id="queue_colours_code">
+			<p id="info1">Your Code:</p>
+			<img id="selected_colours_table" src="images/selected_colours.png">
+		</div>
+		<div class="queue_colours_table" id="queue_colours_table">
+			<img id="colour_table" src="images/colour_table.png">
+			<p id="info2">Select Colours:</p>
+		</div>
+
 	</div>
+</div>
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="javascripts/interactions.js"></script> 
 </body>
