@@ -5,13 +5,11 @@ var game = function (gameID) {
 	this.A_Colour = null;
     this.B_Colour = null;
     this.gameState = "0 JOINT";
-    this.A_Guess = 1;
-    this.B_Guess = 1;
 };
 
 game.prototype.addPlayer = function (p) {
 
-    if (this.gameState != "0 JOINT" && this.gameState != "1 JOINT") {
+    if (this.gameState != "0 JOINT" && this.gameState != "1 JOINT" && this.gameState != "COMPLETED") {
         return new Error("Invalid call to addPlayer, current state is %s", this.gameState);
     }
 

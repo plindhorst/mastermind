@@ -1,5 +1,6 @@
 var colours = ["#FF0000", "#ED7D31", "#FFFF00", "#00B050", "#00B0F0", "#0070C0", "#7030A0", "#FFFFFF"];
 var selected_colour = "";
+seconds = 0, minutes = 0, hours = 0,
 draw_queue_code();
 draw_queue_colours();
 Queue_UI();
@@ -26,9 +27,9 @@ var gs = new GameState();
 			}
 		}
 		if (incomingMsg.type == "DRAW-GAME") {
-			gs.state+="<br>Game drawn.";
-			update_status();
+			gs.state+="<br>The game has begun, start cracking the code!";
 			draw_game();
+			update_status();
 		}
 		if (incomingMsg.type == "STATUS") {
 			gs.state+="<br>"+incomingMsg.data;
@@ -37,18 +38,38 @@ var gs = new GameState();
 		if (incomingMsg.type == "GUESS") {
 			var red = incomingMsg.data[0];
 			var white = incomingMsg.data[1];
-			gs.state+="<br>red("+red+") white("+white+") Guesses Remaining: "+gs.Guesses;
+			gs.state+="<br>You Guessed. red("+red+") white("+white+") Remaining: "+gs.Guesses;
 			update_guesses(red,white);
 			update_status();
 		}
 		if (incomingMsg.type == "OPPONENT-GUESS") {
-			alert();
 			gs.decrOpponentGuesses();
 			var red = incomingMsg.data[0];
 			var white = incomingMsg.data[1];
 			gs.state+="<br>Opponent guessed. red("+red+") white("+white+") Remaining: "+gs.OpponentGuesses;
 			update_opponent_guesses(red,white);
 			update_status();
+		}
+		if (incomingMsg.type == "OPPONENT-GUESS-CODE") {
+			update_opponent_progress(incomingMsg.data);
+		}
+		if (incomingMsg.type == "QUIT-GAME") {
+			gs.state+="<p style='color:red;'>The opponent has left the game.</p>";
+			gs.state+="You will be redirected to the splash screen in 5 seconds.";
+			update_status();
+			redirect();
+		}
+		if (incomingMsg.type == "WON-GAME") {
+			gs.state+="<p style='color:green;'>You have won!</p>";
+			gs.state+="You will be redirected to the splash screen in 5 seconds.";
+			update_status();
+			redirect();
+		}
+		if (incomingMsg.type == "LOST-GAME") {
+			gs.state+="<p style='color:red;'>You have lost the game.</p>";
+			gs.state+="You will be redirected to the splash screen in 5 seconds.";
+			update_status();
+			redirect();
 		}
     };
 })(); //execute immediately
@@ -113,10 +134,24 @@ function update_opponent_guesses(red,white) {
 		}
 	}
 };
+function update_opponent_progress(code) {
+	var colours_guess=code2Colour(code);
+	for (let i = 0; i < 4; i++) {
+		document.getElementById('opponent_circle-'+(gs.OpponentGuesses+1)+"-"+(i+1)).style.backgroundColor=colours_guess[i];
+	}
+};
 function update_buttons() {	
 	document.getElementById('button-'+gs.Guesses).style.display="block";
+	// Change background of circle when clicked
+	$(document).on('click',"#circle-" + gs.Guesses + "-1,#circle-" + gs.Guesses + "-2,#circle-" + gs.Guesses + "-3,#circle-" + gs.Guesses + "-4", function () {
+		changebg($(this).attr('id'),selected_colour);
+	});
 };
-
+function changebg(id, colour) { // check if circle can change colour
+	var n = id.replace("circle-","").replace("-1","").replace("-2","").replace("-3","").replace("-4","");
+	if (gs.Guesses==n)
+	document.getElementById(id).style.backgroundColor=colour;
+};
 function draw_game() {
 	document.body.style.cursor="default"; //reset pointer
 	selected_colour = ""; // reset selected colour
@@ -128,6 +163,7 @@ function draw_game() {
 	draw_opponent_colours();
 	Game_UI();
 	update_buttons();
+	timer();
 }
 
 function draw_queue_code() {
@@ -144,7 +180,7 @@ function draw_queue_code() {
 }
 
 function draw_queue_colours() {
-	var y = 252;
+	var y = 102;
 	var x = 27;
 	for (i = 1; i <= 8; i++) {
 		var colour = colours[i - 1];
@@ -405,11 +441,6 @@ function code2Colour(code) {
 	return colourarr;
 }
 function Game_UI() {
-	// Change background of circle when clicked
-	$(".mastermind span").click(function () {
-		$(this).css("background-color", selected_colour);
-	});
-
 	// check button is pressed
 	$(".mastermind button").click(function () {
 		var attempt_code = [null,null,null,null];
@@ -493,3 +524,28 @@ function send2Server(type, data) {
 	};
 	socket.send(JSON.stringify(outgoingMsg));
 };
+async function redirect() {
+	await sleep(5000);
+	document.location='splash';
+	}
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+function add() {
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    
+    document.getElementById("time").innerText ="Game duration: "+ (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+    timer();
+}
+function timer() {
+    t = setTimeout(add, 1000);
+}

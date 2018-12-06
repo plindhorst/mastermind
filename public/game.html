@@ -9,12 +9,17 @@
 
 <body>
 		<div class="buttons">
-				<img id="exit" src="images/exit.png"> <!-- add tooltips -->
-				<img id="new" src="images/new.png">
+			<a href="splash" onclick="document.location='splash';">
+				<img id="exit" src="images/exit.png" title="Exit Game">
+			</a>
+
+			<a href="play" onclick="document.location='play';">
+				<img id="new" src="images/new.png" title="Start New Game">
+			</a>
 		</div>
-		<p id="status"></p>
+		
 	<div class="game" id="game">
-			<p id="time">Game duration: 1:03</p>
+			<p id="time">Game duration: 00:00</p>
 			
 			<div class="opponent" id="opponent">
 				<p>Opponent's Progress:</p>
@@ -43,7 +48,7 @@
 
 	</div>
 </div>
-	
+	<div class="statusdiv"><p id="status"></p></div>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="javascripts/interactions.js"></script> 
 </body>
