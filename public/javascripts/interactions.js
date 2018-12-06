@@ -9,8 +9,12 @@ var socket = new WebSocket("ws://localhost:3000");
 var gs = new GameState();
 
 (function setup(){
-    
-
+	// Check if screen size is valid
+	$(window).on('resize', function(){
+		var win = $(this); //this = window
+		if (win.height() < 750) {alert("Screen resolution is below a sufficiently large minimum");}
+		else if (win.width() < 1300) {alert("Screen resolution is below a sufficiently large minimum");}
+	  });
     socket.onmessage = function (event) {
 		
 		let incomingMsg = JSON.parse(event.data);
@@ -549,3 +553,39 @@ function add() {
 function timer() {
     t = setTimeout(add, 1000);
 }
+function toggleFullScreen(elem) {
+	if (document.getElementById("exit_fullscreen").style.display=="none" || document.getElementById("exit_fullscreen").style.display=="") {
+		document.getElementById("exit_fullscreen").style.display="block";
+		document.getElementById("fullscreen").style.display="none"
+	}
+	else{
+		document.getElementById("exit_fullscreen").style.display="none";
+		document.getElementById("fullscreen").style.display="block"
+	}
+	if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
+	  if (elem.requestFullScreen) {
+		elem.requestFullScreen();
+	  } else if (elem.mozRequestFullScreen) {
+		elem.mozRequestFullScreen();
+	  } else if (elem.webkitRequestFullScreen) {
+		elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+	  } else if (elem.msRequestFullscreen) {
+		elem.msRequestFullscreen();
+	  }
+	} else {
+	  if (document.cancelFullScreen) {
+		document.cancelFullScreen();
+	  } else if (document.mozCancelFullScreen) {
+		document.mozCancelFullScreen();
+	  } else if (document.webkitCancelFullScreen) {
+		document.webkitCancelFullScreen();
+	  } else if (document.msExitFullscreen) {
+		document.msExitFullscreen();
+	  }
+	}
+}
+// Ask Server for a new Game
+function newGame() {
+	//send2Server("NEW-GAME", gs.playerType);
+	location.reload();
+};

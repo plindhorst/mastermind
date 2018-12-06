@@ -33,36 +33,44 @@ var server = http.createServer(app);
 const wss = new websocket.Server({server});
 var websockets = {};
 
-// regularly clean up the websockets object
-setInterval(function() {
-    for(let i in websockets){
-        if(websockets[i].gameState=="COMPLETED" || websockets[i].gameState=="0 JOINT"){
-            console.log("Deleting game "+i);
-            delete websockets[i];
-        }
-    }
-}, 5000);
-
-var currentGame = new Game(GameStats.gamesInitialized+1);
+websockets[0] = new Game(GameStats.gamesInitialized);
 var connectionID = 0;
 
+
 wss.on("connection", function connection(ws) {
-    GameStats.queuePlayers++;
+    let gameObj;
+    let playerType;
     let con = ws;
     con.id = connectionID++;
-    let playerType = currentGame.addPlayer(con);
-    websockets[con.id] = currentGame;
-    let gameObj = websockets[con.id];
-    console.log("Player %s placed in game %s as %s", con.id, currentGame.id, playerType);
+
+    GameStats.queuePlayers++;
+    for(let i in websockets){ // Join game if possible
+        if (websockets[i].gameState=="0 JOINED" || websockets[i].gameState=="1 JOINED") {
+            playerType = websockets[i].addPlayer(con);
+            gameObj = websockets[i];
+            console.log("Player %s placed in game %s as %s", con.id, websockets[i].id, playerType);
+            break;
+        }
+    }
+    if (typeof gameObj === 'undefined') { // no joinable game found: create a new game
+        GameStats.gamesInitialized++;
+        gameObj=new Game(GameStats.gamesInitialized);
+        websockets[GameStats.gamesInitialized] = gameObj;
+        playerType = websockets[GameStats.gamesInitialized].addPlayer(con);
+        console.log("Game %s created.", GameStats.gamesInitialized);
+        console.log("Player %s placed in game %s as %s", con.id, websockets[GameStats.gamesInitialized].id, playerType);
+    }
+    
     con.send((playerType == "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
 
-    if (currentGame.hasTwoConnectedPlayers()) {
-        currentGame = new Game(GameStats.gamesInitialized++);
+    if (gameObj.hasTwoConnectedPlayers()) {
         GameStats.queuePlayers-=2;
         GameStats.inGamePlayers+=2;
         sendTo(gameObj.playerA, "STATUS", "Second player has joined the game.");
     }
 
+
+    // Messages from Client
     con.on("message", function incoming(message) {
         let Msg = JSON.parse(message);
         
@@ -116,10 +124,13 @@ wss.on("connection", function connection(ws) {
                 }
             }
         }
-        
+        if (Msg.type == "NEW-GAME") {
+            con.close();
+        }
     });
 
     con.on("close", function () {
+        gameObj.gameState = "0 JOINED"
         console.log("Player "+ con.id + " disconnected.");
         try {
             sendTo(gameObj.playerB, "QUIT-GAME", null);
@@ -130,10 +141,7 @@ wss.on("connection", function connection(ws) {
         if (GameStats.inGamePlayers>0) {
             GameStats.inGamePlayers--;
         }
-        delete websockets[gameObj.id];
-        delete websockets[gameObj.id-1];
-        gameObj.gameState = "COMPLETED";
-        console.log("Game "+gameObj.id+" completed and deleted.");
+        console.log("Game "+gameObj.id+" has ended.");
     });
 
     

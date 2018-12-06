@@ -1,0 +1,67 @@
+/*    Queue    */
+
+.queue .selected_colours {
+	position: relative;
+	width: 550px;
+	height: 150px;
+	margin: 0 auto;
+	margin-top: 350px;
+}
+
+.queue #colour_table {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 550px;
+	height: 60px;
+}
+
+.queue #selected_colours_table {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: auto;
+	height: 60px;
+}
+
+.queue .selected_colours button {
+	position: absolute;
+	top: -80;
+	left: 0;
+	width: 550px;
+	height: 60px;
+	font-family: 'Roboto', sans-serif;
+	background-color: #AFABAB;
+	outline: none;
+	border: 2px solid black;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+	font-size: 20px;
+	font-style: bold;
+}
+
+.queue .selected_colours button:hover {
+	animation: rainbow 10s infinite;
+	animation-fill-mode: forwards;
+	cursor: hand;
+}
+
+.queue #info1,
+.queue #info2 {
+	font-family: 'Roboto', sans-serif;
+	color: rgb(220, 220, 220);
+	position: absolute;
+	font-size: 20px;
+}
+
+.queue #info1 {
+	left: 180;
+	top: 20;
+}
+
+.queue #info2 {
+	left: -150;
+	bottom: 18;
+}

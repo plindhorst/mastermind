@@ -1,11 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:700');
+@import 'animations.css';
+@import 'ajustements.css';
+@import 'queue.css';
 
 * {
 	margin: 0;
 	padding: 0;
 }
 
-body {
+html,body {
 	background-color: rgb(112, 112, 112);
 	overflow-x: hidden;
 }
@@ -44,12 +47,19 @@ body {
 	color: rgb(112, 112, 112);
 }
 
+#status:after {
+	content: " _";
+    animation: blinking 0.9s steps(3, start) infinite;
+}
+
 /*    Buttons    */
 .buttons {
 	margin: 10px;
 	width: 30px;
 }
 
+#exit_fullscreen,
+#fullscreen,
 #exit,
 #new {
 	position: absolute;
@@ -58,9 +68,17 @@ body {
 	padding-bottom: 5px;
 }
 
+#exit_fullscreen:hover,
+#fullscreen:hover,
 #exit:hover,
 #new:hover {
 	cursor: pointer;
+}
+
+#exit_fullscreen,
+#fullscreen {
+	top: 80px;
+	left: 10px;
 }
 
 #exit {
@@ -73,6 +91,9 @@ body {
 	left: 10px;
 }
 
+#exit_fullscreen{
+	display: none;
+}
 /*    Mastermind Table    */
 .mastermind {
 	position: relative;
@@ -210,118 +231,4 @@ span {
 .opponent_block_circles,
 .block_circles {
 	display: none;
-}
-
-/*    Queue    */
-
-.queue .selected_colours {
-	position: relative;
-	width: 550px;
-	height: 150px;
-	margin: 0 auto;
-	margin-top: 350px;
-}
-
-.queue #colour_table {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 550px;
-	height: 60px;
-}
-
-.queue #selected_colours_table {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: auto;
-	height: 60px;
-}
-
-.queue .selected_colours button {
-	position: absolute;
-	top: -80;
-	left: 0;
-	width: 550px;
-	height: 60px;
-	font-family: 'Roboto', sans-serif;
-	background-color: #AFABAB;
-	outline: none;
-	border: 2px solid black;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 15px;
-	padding-right: 15px;
-	font-size: 20px;
-	font-style: bold;
-}
-
-.queue .selected_colours button:hover {
-	animation: rainbow 10s infinite;
-	animation-fill-mode: forwards;
-	cursor: hand;
-}
-
-.queue #info1,
-.queue #info2 {
-	font-family: 'Roboto', sans-serif;
-	color: rgb(220, 220, 220);
-	position: absolute;
-	font-size: 20px;
-}
-
-.queue #info1 {
-	left: 180;
-	top: 20;
-}
-
-.queue #info2 {
-	left: -150;
-	bottom: 18;
-}
-
-/*    Rainbow Animation    */
-@keyframes rainbow {
-	15% {
-		background: #FF0000;
-	}
-
-	30% {
-		background: #ED7D31;
-	}
-
-	45% {
-		background: #FFFF00;
-	}
-
-	60% {
-		background: #00B050;
-	}
-
-	75% {
-		background: #00B0F0;
-	}
-
-	100% {
-		background: #7030A0;
-	}
-}
-
-/*    Screen Adjustements    */
-
-@media screen and (max-width: 1415px) {
-	.opponent {
-		position: absolute;
-		left: 50%;
-		top: 800px;
-		margin-bottom: 50px;
-	}
-
-	.statusdiv {
-		bottom: -200;
-		width: 200px;
-		height: 300px;
-		position: absolute;
-		left: 0;
-	}
 }
