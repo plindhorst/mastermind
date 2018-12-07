@@ -2,17 +2,6 @@
 
 @media screen and (max-width: 1415px) {
 	.opponent {
-		position: absolute;
-		left: 50%;
-		top: 800px;
-		margin-bottom: 50px;
-	}
-
-	.statusdiv {
-		bottom: -200;
-		width: 200px;
-		height: 300px;
-		position: absolute;
-		left: 0;
+		position: relative;
 	}
 }

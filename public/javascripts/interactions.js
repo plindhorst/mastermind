@@ -102,7 +102,8 @@ function GameState(){
 	
 }
 function update_status() {
-	document.getElementById('status').innerHTML=gs.state;
+	document.getElementById('status').innerHTML=gs.state; // Add message to status
+	$('.console').scrollTop($('.console')[0].scrollHeight); // Scroll to bottom
 };
 function update_guesses(red,white) {
 	document.getElementById('block-'+(gs.Guesses+1)).style.display="block";
