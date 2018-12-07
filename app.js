@@ -130,7 +130,7 @@ wss.on("connection", function connection(ws) {
     });
 
     con.on("close", function () {
-        gameObj.gameState = "0 JOINED"
+        gameObj.reset(); // reset game for reuse
         console.log("Player "+ con.id + " disconnected.");
         try {
             sendTo(gameObj.playerB, "QUIT-GAME", null);

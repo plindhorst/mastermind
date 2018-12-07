@@ -39,4 +39,10 @@ game.prototype.hasTwoConnectedPlayers = function () {
     return (this.gameState == "2 JOINED");
 };
 
+game.prototype.reset = function () {
+	this.A_Colour = null;
+    this.B_Colour = null;
+    this.gameState = "0 JOINED";
+};
+
 module.exports = game;
