@@ -4,7 +4,7 @@ seconds = 0, minutes = 0, hours = 0;
 toggleFullScreen();
 draw_game();
 
-//var socket = new WebSocket("ws://localhost:3000");
+var socket = new WebSocket("ws://localhost:3000");
 var gs = new GameState();
 
 
@@ -66,11 +66,11 @@ function changebg(id, colour) { // check if circle can change colour
 	if (gs.Guesses==n)
 	document.getElementById(id).style.backgroundColor=colour;
 };
+
 function draw_game() {
 	document.body.style.cursor="default"; //reset pointer
 	selected_colour = ""; // reset selected colour
 	document.getElementById('game').style.display = "inline";
-	document.getElementById('queue').style.display = "none";
 	draw_colours();
 	draw_table();
 	Game_UI();
@@ -329,6 +329,5 @@ function codemaker(){
 	var code;
 	for(let i = 0; i < 4; i++)
 		code+=Math.floor(Math.random() * 8).toString();
-	//gs.colour=code;
-	console.log(code);
+	gs.colour=code;
 }
