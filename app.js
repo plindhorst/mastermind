@@ -25,6 +25,12 @@ app.get("/play", (req, res) => {
     });
 });
 
+app.get("/offline", (req, res) => {
+    res.sendFile("offline.html", {
+        root: "./public"
+    });
+});
+
 app.get("/splash", (req, res) => {
     res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
 });
@@ -130,7 +136,6 @@ wss.on("connection", function connection(ws) {
     });
 
     con.on("close", function () {
-        gameObj.reset(); // reset game for reuse
         console.log("Player "+ con.id + " disconnected.");
         try {
             sendTo(gameObj.playerB, "QUIT-GAME", null);
@@ -141,6 +146,7 @@ wss.on("connection", function connection(ws) {
         if (GameStats.inGamePlayers>0) {
             GameStats.inGamePlayers--;
         }
+        gameObj.reset(); // reset game for reuse
         console.log("Game "+gameObj.id+" has ended.");
     });
 
