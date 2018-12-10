@@ -1,30 +1,31 @@
 var colours = ["#FF0000", "#ED7D31", "#FFFF00", "#00B050", "#00B0F0", "#0070C0", "#7030A0", "#FFFFFF"];
 var selected_colour = "";
 seconds = 0, minutes = 0, hours = 0;
-toggleFullScreen();
-draw_game();
+//toggleFullScreen();
+
 
 var socket = new WebSocket("ws://localhost:3000");
 var gs = new GameState();
-
-
+draw_game();
+codemaker();
 
 /* basic constructor of game state */
 function GameState(){
 	this.Guesses = 10;
 	this.colour=null;
-	this.state=null;
+	this.state="";
 
     this.decrGuesses = function(){
 		this.Guesses--;
 		update_buttons();
 		update_status();
         if(this.Guesses == 10){
-            //lose
+			//lose
+			gs.state+="<p style='color:red;'>You have lost!</p>";
+			gs.state+="You will be redirected to the splash screen in 5 seconds.";
+			update_status();
+			redirect();
         }
-	};
-	this.decrOpponentGuesses = function(){
-		this.OpponentGuesses--;
 	};
 	
 }
@@ -60,12 +61,12 @@ function update_buttons() {
 	$(document).on('click',"#circle-" + gs.Guesses + "-1,#circle-" + gs.Guesses + "-2,#circle-" + gs.Guesses + "-3,#circle-" + gs.Guesses + "-4", function () {
 		changebg($(this).attr('id'),selected_colour);
 	});
-};
+}
 function changebg(id, colour) { // check if circle can change colour
 	var n = id.replace("circle-","").replace("-1","").replace("-2","").replace("-3","").replace("-4","");
 	if (gs.Guesses==n)
 	document.getElementById(id).style.backgroundColor=colour;
-};
+}
 
 function draw_game() {
 	document.body.style.cursor="default"; //reset pointer
@@ -202,6 +203,16 @@ function Game_UI() {
 		else{ // convert colours to code
 			$(this).css('display', 'none');
 			gs.decrGuesses();
+			
+			var result=getPegs(colour2Code(attempt_code),gs.colour);
+			if (result[0]==4) {
+				// win
+				gs.state+="<p style='color:green;'>You have won!</p>";
+				gs.state+="You will be redirected to the splash screen in 5 seconds.";
+				update_status();
+				redirect();
+			}
+			update_guesses(result[0], result[1]);
 		}
 	});
 
@@ -310,11 +321,11 @@ function getPegs(guess, answer) {
     var white = 0;
     var red = 0;
     for (let i = 0; i < 4; i++) {
-        if (guess.charAt(i) == answer.charAt(i)) {
+        if (guess[i] == answer.charAt(i)) {
             red++;
         }
         for (let j = 0; j < 4; j++) {
-            if (guess.charAt(i) == answer.charAt(j)) {
+            if (guess[i] == answer.charAt(j)) {
                 white++;
                 break;
             }
@@ -326,8 +337,18 @@ function getPegs(guess, answer) {
 };
 
 function codemaker(){
-	var code;
+	var code="";
 	for(let i = 0; i < 4; i++)
-		code+=Math.floor(Math.random() * 8).toString();
-	gs.colour=code;
+		code+=Math.floor(Math.random() * 8);
+	gs.colour=code.toString();
+	gs.state+="Start cracking the code!";
+	update_status();
+}
+
+async function redirect() {
+	await sleep(5000);
+	document.location='splash';
+}
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
