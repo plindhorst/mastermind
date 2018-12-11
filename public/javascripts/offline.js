@@ -282,21 +282,6 @@ function add() {
 function timer() {
     t = setTimeout(add, 1000);
 }
-function toggleFullScreen() {
-	if (document.getElementById("exit_fullscreen").style.display == "none" || document.getElementById("exit_fullscreen").style.display == "") {
-		document.getElementById("exit_fullscreen").style.display = "block";
-		document.getElementById("fullscreen").style.display = "none"
-	} else {
-		document.getElementById("exit_fullscreen").style.display = "none";
-		document.getElementById("fullscreen").style.display = "block"
-	}
-	let elem = document.getElementById("screen");
-	if (!document.webkitIsFullScreen) {
-		elem.webkitRequestFullscreen();
-	} else {
-		document.webkitCancelFullScreen();
-	}
-}
 
 function getPegs(guess, answer) {
     var result = [0, 0];
