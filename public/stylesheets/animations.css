@@ -8,6 +8,16 @@
 	100% {background: #7030A0;}
 }
 
+@keyframes rainbow_text {
+	0% {color: #000;}
+	15% {color: #FF0000;}
+	30% {color: #ED7D31;}
+	45% {color: #FFFF00;}
+	60% {color: #00B050;}
+	75% {color: #00B0F0;}
+	100% {color: #7030A0;}
+}
+
 @keyframes blinking {
     to {visibility: hidden;}
 }

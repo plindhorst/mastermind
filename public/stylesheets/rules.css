@@ -1,3 +1,8 @@
+@import 'animations.css';
+@import url('https://fonts.googleapis.com/css?family=Roboto:700');
+@font-face {src: url(../fonts/Baloo.ttf);font-family: baloo;}
+@font-face {src: url(../fonts/Bungee.otf);font-family: bungee;}
+@font-face {src: url(../fonts/rules.woff);font-family: custom;}
 * {
     margin: 0;
     padding: 0;
@@ -7,21 +12,81 @@ body {
     background-color: rgb(112, 112, 112);
 }
 
-h1 {
+.title{
+  height:130px;
+  width: 100%;
+  margin: 0 auto;
   text-align: center;
+  margin-top:30px;
+  margin-bottom:30px;
+}
+.title span {
+  color: #1b1818;
+  font-family: bungee;
+  font-size: 50px;
+}
+#mastermind {
+  animation: rainbow_text 10s infinite;
+	animation-fill-mode: forwards;
 }
 
-div {
-  border: 2px solid gray;
-  padding: 8px;
+.box {
+  margin: 0 auto;
+  width: 90%;
+  background-color:#595959;
+  border: 2px solid black;
+  padding: 20px;
+  margin-bottom: 100px;
 }
 
-h1 {
-  text-align: center;
-  text-transform: uppercase;
-  color: darkblue;
+h2 {
+  font-size: 25px;
+	font-family: baloo;
+  color: #d9d9d9;
+  padding-top:5px;
+  padding-bottom:5px;
 }
-
+h2:before{
+  content:"❱ ";
+  animation: rainbow_text 10s infinite;
+	animation-fill-mode: forwards;
+}
 p {
-    font-family: 'Roboto', sans-serif;
+  padding-bottom:2px;
+  font-size: 17px;
+  color: #bfbfbf;
+  font-family: custom;
+}
+p:before{
+  content:"• ";
+  color:black;
+  font-size: 25px;
+}
+
+.names{
+  height: 50px;
+  text-align: center;
+
+}
+.names span{
+  color: #1b1818;
+  font-family: bungee;
+  font-size: 20px;
+}
+
+#name1, #name2 {
+  animation: rainbow_text 10s infinite;
+	animation-fill-mode: forwards;
+}
+
+#exit{
+  position: absolute;
+  top:5;
+  left:7;
+	height: 30px;
+	width: 30px;
+	padding-bottom: 5px;
+}
+#exit:hover {
+	cursor: pointer;
 }
