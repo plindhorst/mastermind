@@ -31,8 +31,8 @@ app.get("/offline", (req, res) => {
     });
 });
 
-app.get("/howto", (req, res) => {
-    res.sendFile("howto.html", {
+app.get("/rules", (req, res) => {
+    res.sendFile("rules.html", {
         root: "./public"
     });
 });

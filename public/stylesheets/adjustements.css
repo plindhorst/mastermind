@@ -1,7 +1,22 @@
-/*    Screen Adjustements    */
-
-@media screen and (max-width: 1415px) {
-	.opponent {
-		position: relative;
+/*    Infrom user if screen is too small    */
+#size{
+	display:none;
+	position: absolute;
+	bottom:5;
+	right:5;
+	font-size: 15px;
+	font-family: 'Roboto', sans-serif;
+	color: rgb(220, 220, 220);
+	padding:5px;
+	background-color: orangered;
+}
+@media screen and (max-width: 1000px) {
+	#size{
+		display:block;
+	}
+}
+@media screen and (max-height:750px) {
+	#size{
+		display:block;
 	}
 }

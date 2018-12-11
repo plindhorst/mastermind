@@ -7,15 +7,6 @@ var socket = new WebSocket("ws://localhost:3000");
 var gs = new GameState();
 
 (function setup() {
-	// Check if screen size is valid
-	$(window).on('resize', function () {
-		var win = $(this); //this = window
-		if (win.height() < 750) {
-			alert("Screen resolution is below a sufficiently large minimum");
-		} else if (win.width() < 1300) {
-			alert("Screen resolution is below a sufficiently large minimum");
-		}
-	});
 
 	socket.onmessage = function (event) { // event = message from server
 		let incomingMsg = JSON.parse(event.data);
