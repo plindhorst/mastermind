@@ -3,6 +3,7 @@ const express = require("express");
 const cookies = require("cookie-parser");
 const websocket = require("ws");
 
+var port=3000;
 var cookie = require("./cookie");
 var Game = require("./game");
 var GameStats = require("./stats");
@@ -218,4 +219,4 @@ function getPegs(guess, answer) {
     return result;
 };
 
-server.listen(3000); // Listen at port 3000
+server.listen(port); // Listen at port 3000
