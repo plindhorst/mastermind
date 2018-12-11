@@ -3,7 +3,7 @@ const express = require("express");
 const cookies = require("cookie-parser");
 const websocket = require("ws");
 
-var port=3000;
+var port=process.env.PORT || 3000;
 var cookie = require("./cookie");
 var Game = require("./game");
 var GameStats = require("./stats");
