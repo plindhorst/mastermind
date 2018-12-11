@@ -54,11 +54,13 @@ function update_guesses(red,white) {
 
 
 function update_buttons() {	
-	document.getElementById('button-'+gs.Guesses).style.display="block";
+	if (gs.Guesses>0) {
+		document.getElementById('button-'+gs.Guesses).style.display="block";
 	// Change background of circle when clicked
 	$(document).on('click',"#circle-" + gs.Guesses + "-1,#circle-" + gs.Guesses + "-2,#circle-" + gs.Guesses + "-3,#circle-" + gs.Guesses + "-4", function () {
 		changebg($(this).attr('id'),selected_colour);
 	});
+	}
 }
 function changebg(id, colour) { // check if circle can change colour
 	var n = id.replace("circle-","").replace("-1","").replace("-2","").replace("-3","").replace("-4","");
