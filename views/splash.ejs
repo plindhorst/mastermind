@@ -15,8 +15,10 @@
                 <form action="/offline">
                         <button id="two">Play Offline</button>
                 </form>
-                
-                <button id="three">How to play ?</button>
+
+                <form action="/howto">
+                        <button id="three">How to play ?</button>
+                </form>
         </div>
 
         <p id="p1">Players in a Game:
@@ -27,6 +29,10 @@
         </p>
         <p id="p3">Players waiting in Queue:
                 <%= queuePlayers %>
+        </p>
+        <p id="p4">You have been here
+                <%= count %>
+                times.
         </p>
 </body>
 

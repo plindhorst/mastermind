@@ -1,24 +1,24 @@
-var http = require('http');
-var fs = require('fs');
+const http = require('http');
 const express = require("express");
 const cookies = require("cookie-parser");
-var websocket = require("ws");
-const bodyParser = require("body-parser");
-var session = require("express-session");
+const websocket = require("ws");
 
-
+var cookie = require("./cookie");
 var Game = require("./game");
 var GameStats = require("./stats");
-var messages = require("./messages");
 var app = express();
-app.set("view engine", "ejs");
 
+app.set("view engine", "ejs");
+app.use(cookies(cookie.count));
+
+// Routes
 app.use(express.static(__dirname + "/public"));
 
-app.get("/", (req, res) => {
-    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
-});
 
+app.get("/", function (req, res) {
+	res.cookie("count_cookie", cookie.count++);
+    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers, count: cookie.count});
+});
 app.get("/play", (req, res) => {
     res.sendFile("game.html", {
         root: "./public"
@@ -31,9 +31,17 @@ app.get("/offline", (req, res) => {
     });
 });
 
-app.get("/splash", (req, res) => {
-    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
+app.get("/howto", (req, res) => {
+    res.sendFile("howto.html", {
+        root: "./public"
+    });
 });
+
+app.get("/splash", (req, res) => {
+    res.cookie("count_cookie", cookie.count++);
+    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers, count: cookie.count});
+});
+
 
 var server = http.createServer(app);
 const wss = new websocket.Server({server});
@@ -47,9 +55,9 @@ wss.on("connection", function connection(ws) {
     let gameObj;
     let playerType;
     let con = ws;
-    con.id = connectionID++;
+    con.id = connectionID++; // ID of player
+    GameStats.queuePlayers++; // Increment queue stat
 
-    GameStats.queuePlayers++;
     for(let i in websockets){ // Join game if possible
         if (websockets[i].gameState=="0 JOINED" || websockets[i].gameState=="1 JOINED") {
             playerType = websockets[i].addPlayer(con);
@@ -67,8 +75,10 @@ wss.on("connection", function connection(ws) {
         console.log("Player %s placed in game %s as %s", con.id, websockets[GameStats.gamesInitialized].id, playerType);
     }
     
-    con.send((playerType == "A") ? messages.S_PLAYER_A : messages.S_PLAYER_B);
+    // Send to player what type he is
+    con.send((playerType == "A") ? sendTo(gameObj.playerA,"PLAYER-TYPE", "A") : sendTo(gameObj.playerB,"PLAYER-TYPE", "B"));
 
+    // If a second player joins the game, notify first player
     if (gameObj.hasTwoConnectedPlayers()) {
         GameStats.queuePlayers-=2;
         GameStats.inGamePlayers+=2;
@@ -76,11 +86,11 @@ wss.on("connection", function connection(ws) {
     }
 
 
-    // Messages from Client
+    // Messages from Client to the Server
     con.on("message", function incoming(message) {
-        let Msg = JSON.parse(message);
+        let Msg = JSON.parse(message); // Parse message string to get JS objects
         
-        if (Msg.type == "COLOUR") {
+        if (Msg.type == "COLOUR") { // Message is a selected colour
             if (Msg.playerType == "A") {
                 gameObj.A_Colour = Msg.data;
                 console.log("Player A Chose Code: " + gameObj.A_Colour);
@@ -96,28 +106,35 @@ wss.on("connection", function connection(ws) {
             drawGame(); //start the game if both players have chosen codes
         }
 
-        if (Msg.type == "GUESS") {
+        if (Msg.type == "GUESS") { // Message is a guess
             if (Msg.playerType == "A") {
                 if (Msg.data==gameObj.B_Colour) {   // A won
                     sendTo(gameObj.playerA, "GUESS", [4,0]);
-                    sendTo(gameObj.playerA, "WON-GAME");
                     sendTo(gameObj.playerB, "OPPONENT-GUESS", [4,0]);
+                    sendTo(gameObj.playerA, "WON-GAME");
                     sendTo(gameObj.playerB, "LOST-GAME");
                     console.log("Player A won in Game"+gameObj.id);
                 }
+                
                 else{
                     var result=getPegs(Msg.data,gameObj.B_Colour);
                     sendTo(gameObj.playerA, "GUESS", result);
                     sendTo(gameObj.playerB, "OPPONENT-GUESS", result);
                     sendTo(gameObj.playerB, "OPPONENT-GUESS-CODE", Msg.data);
+                    gameObj.playerA_GUESSES--; // Decrement guesses
                     console.log("Player A Guessed: " + Msg.data+" R("+result[0]+")" +" W("+result[1]+")");
+                    if(gameObj.playerA_GUESSES==0 && result[0]!=4){ // Check if player has 0 guesses left = lost
+                        sendTo(gameObj.playerA, "LOST-GAME");
+                        sendTo(gameObj.playerB, "WON-GAME");
+                        console.log("Player B won in Game"+gameObj.id);
+                    }
                 }
 
             } else if (Msg.playerType == "B") {
                 if (Msg.data==gameObj.A_Colour) {   // B won
                     sendTo(gameObj.playerB, "GUESS", [4,0]);
-                    sendTo(gameObj.playerB, "WON-GAME");
                     sendTo(gameObj.playerA, "OPPONENT-GUESS", [4,0]);
+                    sendTo(gameObj.playerB, "WON-GAME");
                     sendTo(gameObj.playerA, "LOST-GAME");
                     console.log("Player B won in Game"+gameObj.id);
                 }
@@ -127,6 +144,11 @@ wss.on("connection", function connection(ws) {
                     sendTo(gameObj.playerA, "OPPONENT-GUESS", result);
                     sendTo(gameObj.playerA, "OPPONENT-GUESS-CODE", Msg.data);
                     console.log("Player B Guessed: " + Msg.data+" R("+result[0]+")" +" W("+result[1]+")");
+                    if(gameObj.playerB_GUESSES==0 && result[0]!=4){ // Check if player has 0 guesses left = lost
+                        sendTo(gameObj.playerB, "LOST-GAME");
+                        sendTo(gameObj.playerA, "WON-GAME");
+                        console.log("Player A won in Game"+gameObj.id);
+                    }
                 }
             }
         }
@@ -135,7 +157,7 @@ wss.on("connection", function connection(ws) {
         }
     });
 
-    con.on("close", function () {
+    con.on("close", function () { // When a player disconnects
         console.log("Player "+ con.id + " disconnected.");
         try {
             sendTo(gameObj.playerB, "QUIT-GAME", null);
@@ -143,10 +165,14 @@ wss.on("connection", function connection(ws) {
         try {
             sendTo(gameObj.playerA, "QUIT-GAME", null);
         } catch (error) {}
-        if (GameStats.inGamePlayers>0) {
+        if (GameStats.inGamePlayers>0) 
             GameStats.inGamePlayers--;
-        }
+        
+        if(gameObj.gameState=="1 JOINED")
+                gameObj.gameState="0 JOINED"; 
+        if(gameObj.gameState=="0 JOINED") // If all players have left
         gameObj.reset(); // reset game for reuse
+
         console.log("Game "+gameObj.id+" has ended.");
     });
 
@@ -162,7 +188,7 @@ wss.on("connection", function connection(ws) {
 });
 
 
-
+// Send to the Client
 function sendTo(to,type,data) {
     let msg = {
         type: type,
@@ -171,7 +197,7 @@ function sendTo(to,type,data) {
     to.send(JSON.stringify(msg));
 };
 
-
+// Calculate red and white pegs
 function getPegs(guess, answer) {
     var result = [0, 0];
     var white = 0;
@@ -192,4 +218,4 @@ function getPegs(guess, answer) {
     return result;
 };
 
-server.listen(3000);
+server.listen(3000); // Listen at port 3000

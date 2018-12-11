@@ -1,6 +1,8 @@
 var game = function (gameID) {
     this.playerA = null;
     this.playerB = null;
+    this.playerA_GUESSES = 10;
+    this.playerB_GUESSES = 10;
     this.id = gameID;
 	this.A_Colour = null;
     this.B_Colour = null;
@@ -23,16 +25,6 @@ game.prototype.addPlayer = function (p) {
         this.playerB = p;
         return "B";
     }
-};
-
-
-
-
-game.prototype.setColourA = function(c){
-    this.A_Colour=c;
-};
-game.prototype.setColourB = function(c){
-    this.B_Colour=c;
 };
 
 game.prototype.hasTwoConnectedPlayers = function () {

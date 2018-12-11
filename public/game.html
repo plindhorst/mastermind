@@ -8,54 +8,57 @@
 </head>
 
 <body>
-		<div class="buttons">
-			<a href="splash" onclick="document.location='splash';">
-				<img id="exit" src="images/exit.png" title="Exit Game">
-			</a>
+	<div class="screen" id="screen">
+	<div class="buttons">
+		<a href="splash" onclick="document.location='splash';">
+			<img id="exit" src="images/exit.png" title="Exit Game">
+		</a>
 
-			<a onclick="newGame();">
-				<img id="new" src="images/new.png" title="Start New Game">
-			</a>
-			<a onclick='toggleFullScreen(document.body)'>
-				<img id="fullscreen" src="images/fullscreen.png" title="Go Fullscreen">
-				<img id="exit_fullscreen" src="images/exit_fullscreen.png" title="Exit Fullscreen">
-			</a>
-		</div>
-		
-	<div class="game" id="game">
-			<p id="time">Game duration: 00:00</p>
-			
-			<div class="opponent" id="opponent">
-				<p>Opponent's Progress:</p>
-				<img id="oppponent-table" src="images/opponent.png">
-			</div>
-			<div class="mastermind" id="mastermind">
-				<img id="table" src="images/table.png">
-			</div>
-		
-			<div class="colours" id="colours">
-				<img id="colour_table" src="images/colour_table.png">
-			</div>
+		<a onclick="newGame();">
+			<img id="new" src="images/new.png" title="Start New Game">
+		</a>
+		<a onclick="toggleFullScreen();">
+			<img id="fullscreen" src="images/fullscreen.png" title="Go Fullscreen">
+			<img id="exit_fullscreen" src="images/exit_fullscreen.png" title="Exit Fullscreen">
+		</a>
 	</div>
 
-<div class="queue" id="queue">
-	<div class="selected_colours" id="selected_colours">
-		<button id="select">Confirm Colour Code</button>
-		<div class="queue_colours_code" id="queue_colours_code">
-			<p id="info1">Your Code:</p>
-			<img id="selected_colours_table" src="images/selected_colours.png">
+	<div class="game" id="game">
+		<p id="time">Game duration: 00:00</p>
+
+		<div class="opponent" id="opponent">
+			<p>Opponent's Progress:</p>
+			<img id="oppponent-table" src="images/opponent.png">
 		</div>
-		<div class="queue_colours_table" id="queue_colours_table">
-			<img id="colour_table" src="images/colour_table.png">
-			<p id="info2">Select Colours:</p>
+		<div class="mastermind" id="mastermind">
+			<img id="table" src="images/table.png">
 		</div>
 
+		<div class="colours" id="colours">
+			<img id="colour_table" src="images/colour_table.png">
+		</div>
+	</div>
+
+	<div class="queue" id="queue">
+		<div class="selected_colours" id="selected_colours">
+			<button id="select">Confirm Colour Code</button>
+			<div class="queue_colours_code" id="queue_colours_code">
+				<p id="info1">Your Code:</p>
+				<img id="selected_colours_table" src="images/selected_colours.png">
+			</div>
+			<div class="queue_colours_table" id="queue_colours_table">
+				<img id="colour_table" src="images/colour_table.png">
+				<p id="info2">Select Colours:</p>
+			</div>
+
+		</div>
+	</div>
+	<div class="console">
+		<p id="status"></p>
 	</div>
 </div>
-<div class="console"><p id="status"></p></div>
-	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="javascripts/interactions.js"></script> 
+	<script src="javascripts/interactions.js"></script>
 </body>
 
 </html>

@@ -10,8 +10,14 @@
 
 html,body {
 	background-color: rgb(112, 112, 112);
-	overflow-x: hidden;
 }
+
+  
+.screen:-webkit-full-screen {
+	background-color:#808080;
+	height: 100%;
+	width: 100%;
+} 
 
 #game {
 	display: none;
@@ -233,6 +239,3 @@ span {
 .block_circles {
 	display: none;
 }
-
-
-

@@ -1,38 +1,19 @@
 /*    Rainbow Animation    */
 @keyframes rainbow {
-	15% {
-		background: #FF0000;
-	}
-
-	30% {
-		background: #ED7D31;
-	}
-
-	45% {
-		background: #FFFF00;
-	}
-
-	60% {
-		background: #00B050;
-	}
-
-	75% {
-		background: #00B0F0;
-	}
-
-	100% {
-		background: #7030A0;
-	}
+	15% {background: #FF0000;}
+	30% {background: #ED7D31;}
+	45% {background: #FFFF00;}
+	60% {background: #00B050;}
+	75% {background: #00B0F0;}
+	100% {background: #7030A0;}
 }
 
 @keyframes blinking {
-    to {
-      visibility: hidden;
-    }
+    to {visibility: hidden;}
 }
 
 /* CUSTOM SCROLLBAR */
-/* width */
+	/* width */
 ::-webkit-scrollbar {
 	width: 10px;
 	border-radius: 2px;	
