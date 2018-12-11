@@ -1,8 +1,6 @@
 var colours = ["#FF0000", "#ED7D31", "#FFFF00", "#00B050", "#00B0F0", "#0070C0", "#7030A0", "#FFFFFF"];
 var selected_colour = "";
 seconds = 0, minutes = 0, hours = 0;
-//toggleFullScreen();
-
 
 var socket = new WebSocket("ws://localhost:3000");
 var gs = new GameState();
@@ -284,35 +282,19 @@ function add() {
 function timer() {
     t = setTimeout(add, 1000);
 }
-function toggleFullScreen(elem) {
-	if (document.getElementById("exit_fullscreen").style.display=="none" || document.getElementById("exit_fullscreen").style.display=="") {
-		document.getElementById("exit_fullscreen").style.display="block";
-		document.getElementById("fullscreen").style.display="none"
-	}
-	else{
-		document.getElementById("exit_fullscreen").style.display="none";
-		document.getElementById("fullscreen").style.display="block"
-	}
-	if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
-	  if (elem.requestFullScreen) {
-		elem.requestFullScreen();
-	  } else if (elem.mozRequestFullScreen) {
-		elem.mozRequestFullScreen();
-	  } else if (elem.webkitRequestFullScreen) {
-		elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-	  } else if (elem.msRequestFullscreen) {
-		elem.msRequestFullscreen();
-	  }
+function toggleFullScreen() {
+	if (document.getElementById("exit_fullscreen").style.display == "none" || document.getElementById("exit_fullscreen").style.display == "") {
+		document.getElementById("exit_fullscreen").style.display = "block";
+		document.getElementById("fullscreen").style.display = "none"
 	} else {
-	  if (document.cancelFullScreen) {
-		document.cancelFullScreen();
-	  } else if (document.mozCancelFullScreen) {
-		document.mozCancelFullScreen();
-	  } else if (document.webkitCancelFullScreen) {
+		document.getElementById("exit_fullscreen").style.display = "none";
+		document.getElementById("fullscreen").style.display = "block"
+	}
+	let elem = document.getElementById("screen");
+	if (!document.webkitIsFullScreen) {
+		elem.webkitRequestFullscreen();
+	} else {
 		document.webkitCancelFullScreen();
-	  } else if (document.msExitFullscreen) {
-		document.msExitFullscreen();
-	  }
 	}
 }
 
