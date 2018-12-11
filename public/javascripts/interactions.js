@@ -2,7 +2,8 @@ var colours = ["#FF0000", "#ED7D31", "#FFFF00", "#00B050", "#00B0F0", "#0070C0",
 var selected_colour = "";
 seconds = 0, minutes = 0, hours = 0;
 draw_queue();
-var socket = new WebSocket("ws://localhost:3000");
+var port=process.env.PORT || 3000;
+var socket = new WebSocket("ws://localhost:"+port);
 var gs = new GameState();
 
 (function setup() {
