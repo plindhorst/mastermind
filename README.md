@@ -6,7 +6,7 @@
 ## How to install and run the game?
 
 ❱ For running the game locally you need to have `node` and `npm` (node package manager) installed.
-You can install it [here](https://nodejs.org/en/download/).
+You can download it [here](https://nodejs.org/en/download/).
 
 ❱ Compile with:
 `npm install`
@@ -18,7 +18,7 @@ The game will run on port `3000` by default.
 ❱ Node.js Dependencies:
 `express`, `ejs`, `ws`.
 
-## Some Pictures
+## Some Screenshots
 
 ![Splash Screen](https://imgur.com/nPuTy6I.png "Splash Screen")
 ![Queue](https://imgur.com/JFg86Ia.png "Queue")
