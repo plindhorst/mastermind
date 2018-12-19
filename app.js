@@ -1,24 +1,20 @@
 const http = require('http');
 const express = require("express");
-const cookies = require("cookie-parser");
 const websocket = require("ws");
 
 var port=process.env.PORT || 3000;
-var cookie = require("./cookie");
 var Game = require("./game");
 var GameStats = require("./stats");
 var app = express();
 
 app.set("view engine", "ejs");
-app.use(cookies(cookie.count));
 
 // Routes
 app.use(express.static(__dirname + "/public"));
 
 
 app.get("/", function (req, res) {
-	res.cookie("count_cookie", cookie.count++);
-    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers, count: cookie.count});
+    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
 });
 app.get("/play", (req, res) => {
     res.sendFile("game.html", {
@@ -39,8 +35,7 @@ app.get("/rules", (req, res) => {
 });
 
 app.get("/splash", (req, res) => {
-    res.cookie("count_cookie", cookie.count++);
-    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers, count: cookie.count});
+    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
 });
 
 
@@ -48,8 +43,8 @@ var server = http.createServer(app);
 const wss = new websocket.Server({server});
 var websockets = {};
 
-websockets[0] = new Game(GameStats.gamesInitialized);
-var connectionID = 0;
+//websockets[0] = new Game(GameStats.gamesInitialized);
+var connectionID = 1;
 
 
 wss.on("connection", function connection(ws) {
@@ -57,6 +52,7 @@ wss.on("connection", function connection(ws) {
     let playerType;
     let con = ws;
     con.id = connectionID++; // ID of player
+    con.state = "queue";
     GameStats.queuePlayers++; // Increment queue stat
 
     for(let i in websockets){ // Join game if possible
@@ -81,8 +77,6 @@ wss.on("connection", function connection(ws) {
 
     // If a second player joins the game, notify first player
     if (gameObj.hasTwoConnectedPlayers()) {
-        GameStats.queuePlayers-=2;
-        GameStats.inGamePlayers+=2;
         sendTo(gameObj.playerA, "STATUS", "Second player has joined the game.");
     }
 
@@ -104,6 +98,9 @@ wss.on("connection", function connection(ws) {
                 console.log("Player B Chose Code: " + gameObj.B_Colour);
                 sendTo(gameObj.playerA, "STATUS", "Other player has chosen his code.");
             }
+            con.state = "game";
+            GameStats.queuePlayers--; // Decrement queue stat
+            GameStats.inGamePlayers++; // Increment ingame stat
             drawGame(); //start the game if both players have chosen codes
         }
 
@@ -166,15 +163,15 @@ wss.on("connection", function connection(ws) {
         try {
             sendTo(gameObj.playerA, "QUIT-GAME", null);
         } catch (error) {}
-        if (GameStats.inGamePlayers>0) 
-            GameStats.inGamePlayers--;
-        
-        if(gameObj.gameState=="1 JOINED")
-                gameObj.gameState="0 JOINED"; 
-        if(gameObj.gameState=="0 JOINED") // If all players have left
-        gameObj.reset(); // reset game for reuse
-
-        console.log("Game "+gameObj.id+" has ended.");
+        if (gameObj.gameState == "1 JOINED")
+            gameObj.gameState = "0 JOINED";
+        if (gameObj.gameState == "0 JOINED") // If all players have left
+            gameObj.reset(); // reset game for reuse
+        if (con.state == "game" && GameStats.inGamePlayers != 0)
+            GameStats.inGamePlayers--; // Decrement ingame stat
+        if (con.state == "queue" && GameStats.queuePlayers != 0)
+            GameStats.queuePlayers--; // Decrement queue stat
+        console.log("Game " + gameObj.id + " has ended.");
     });
 
     
