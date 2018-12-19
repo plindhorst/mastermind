@@ -1,5 +1,5 @@
 ###### Paul Lindhorst and Eliran Shamayev
-###### Delft University of Technology ![TUD](http://www.dcsc.tudelft.nl/~mverhaegen/images/TU_Delft_logo_RGB.png "TUD")
+###### Delft University of Technology
 
 # Mastermind online multiplayer game 
 
@@ -17,6 +17,10 @@ The game will run on port `3000` by default.
 
 ❱ Node.js Dependencies:
 `express`, `ejs`, `ws`.
+
+## Some Pictures
+
+![Splash Screen]((https://raw.githubusercontent.com/yepiru/mastermind/master/screenshots/splash.png) "Splash")
 
 ## About this Game
 
