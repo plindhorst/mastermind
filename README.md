@@ -1,5 +1,5 @@
-######### Paul Lindhorst and Eliran Shamayev
-######### Delft University of Technology
+###### Paul Lindhorst and Eliran Shamayev
+###### Delft University of Technology
 
 # Mastermind online multiplayer game 
 
@@ -12,7 +12,7 @@ You can install it [here](https://nodejs.org/en/download/).
 `npm install`
 
 ❱ Run with:
-`npm start` or `node app.js`
+`npm start` or `node app.js`.
 The game will run on port `3000` by default.
 
 ❱ Node.js Dependencies:
