@@ -20,7 +20,9 @@ The game will run on port `3000` by default.
 
 ## Some Pictures
 
-![Splash Screen](https://raw.githubusercontent.com/yepiru/mastermind/master/screenshots/splash.PNG "Splash")
+![Splash Screen](https://imgur.com/nPuTy6I "Splash Screen")
+![Queue](https://imgur.com/JFg86Ia "Queue")
+![Game Screen](https://imgur.com/DBdM6Aw "Game Screen")
 
 ## About this Game
 
