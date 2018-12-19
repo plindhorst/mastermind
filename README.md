@@ -1,16 +1,32 @@
-###### Eliran Shamayev
-###### Paul Lindhorst
-###### Technische Universiteit Delft
+######### Paul Lindhorst and Eliran Shamayev
+######### Delft University of Technology
 
 # Mastermind online multiplayer game 
 
+## How to install and run the game?
+
+❱ For running the game locally you need to have `node` and `npm` (node package manager) installed.
+You can install it [here](https://nodejs.org/en/download/).
+
+❱ Compile with:
+`npm install`
+
+❱ Run with:
+`npm start` or `node app.js`
+The game will run on port `3000` by default.
+
+❱ Node.js Dependencies:
+`express`, `ejs`, `ws`
+
+## About this Game
+
 We welcome you to Mastermind! If you have played Mastermind before, you might've noticed that our version is a little bit different. Let's take a step back, we will explain everything there is to know.
 
-## How to connect?
+### How to connect?
 
 ❱ Here at Mastermind Online, we have two different ways for you to start a game.
 
-## Matchmaking!
+### Matchmaking!
 
 ❱ This option will enable you to to connect and search for a random player.
 
@@ -20,7 +36,7 @@ We welcome you to Mastermind! If you have played Mastermind before, you might've
 
 ❱ As soon as both players decided on their code, and confirmed their choice by pressing "Confirm Colour Code", the match will start!
 
-## Play offline!
+### Play offline!
 
 ❱ As the title says, this option lets you play against the computer!
 
@@ -30,7 +46,7 @@ We welcome you to Mastermind! If you have played Mastermind before, you might've
 
 ❱ Once the game starts, you are ready to start trying to crack the code!
 
-## How to Play?
+### How to Play?
 
 ❱ The game is simple. Both players choose a colour combination, their goal is to crack each others code. The first to do so, wins the game. In this section we dive deeper into the details of each of the games functions and rules.
 
@@ -54,7 +70,7 @@ We welcome you to Mastermind! If you have played Mastermind before, you might've
 
 You will be redirected to the main menu within 5 seconds after the winning guess has been submitted, from which you can start a new game!
 
-## The Console
+### The Console
 
 ❱ The Console is there to help the player, it delivers valuable information.
 
