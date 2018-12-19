@@ -20,9 +20,9 @@ The game will run on port `3000` by default.
 
 ## Some Pictures
 
-![Splash Screen](https://imgur.com/nPuTy6I "Splash Screen")
-![Queue](https://imgur.com/JFg86Ia "Queue")
-![Game Screen](https://imgur.com/DBdM6Aw "Game Screen")
+![Splash Screen](https://imgur.com/nPuTy6I.png "Splash Screen")
+![Queue](https://imgur.com/JFg86Ia.png "Queue")
+![Game Screen](https://imgur.com/DBdM6Aw.png "Game Screen")
 
 ## About this Game
 
