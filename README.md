@@ -1,6 +1,5 @@
 ###### Paul Lindhorst and Eliran Shamayev
-###### Delft University of Technology
-!(http://www.dcsc.tudelft.nl/~mverhaegen/images/TU_Delft_logo_RGB.png "TUD")
+###### Delft University of Technology ![TUD](http://www.dcsc.tudelft.nl/~mverhaegen/images/TU_Delft_logo_RGB.png "TUD")
 
 # Mastermind online multiplayer game 
 
