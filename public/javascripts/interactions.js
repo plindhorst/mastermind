@@ -10,7 +10,6 @@ var gs = new GameState();
 
 	socket.onmessage = function (event) { // event = message from server
 		let incomingMsg = JSON.parse(event.data);
-		//alert(incomingMsg.type);
 
 		if (incomingMsg.type == "PLAYER-TYPE") {
 			if (incomingMsg.data == "A") {
@@ -54,19 +53,31 @@ var gs = new GameState();
 			gs.state += "<p style='color:red;'>The opponent has left the game.</p>";
 			gs.state += "You will be redirected to the splash screen in 5 seconds.";
 			update_status();
-			redirect();
+			redirect5();
 		}
 		if (incomingMsg.type == "WON-GAME") {
 			gs.state += "<p style='color:green;'>You have won!</p>";
-			gs.state += "You will be redirected to the splash screen in 5 seconds.";
+			gs.state += "You will be redirected to the splash screen in 10 seconds.";
 			update_status();
-			redirect();
+			redirect10();
 		}
 		if (incomingMsg.type == "LOST-GAME") {
 			gs.state += "<p style='color:red;'>You have lost the game.</p>";
-			gs.state += "You will be redirected to the splash screen in 5 seconds.";
+			gs.state += "You will be redirected to the splash screen in 10 seconds.";
 			update_status();
-			redirect();
+			redirect10();
+		}
+		if (incomingMsg.type == "ANSWER") {
+			var colour1=colours[incomingMsg.data[0]];
+			var colour2=colours[incomingMsg.data[1]];
+			var colour3=colours[incomingMsg.data[2]];
+			var colour4=colours[incomingMsg.data[3]];
+			gs.state += "<br>Opponent's answer was: ";
+			gs.state += "<span id='opppo' style='color:"+colour1+";'>&#11044;</span>";
+			gs.state += "<span id='opppo' style='color:"+colour2+";'>&#11044;</span>";
+			gs.state += "<span id='opppo' style='color:"+colour3+";'>&#11044;</span>";
+			gs.state += "<span id='opppo' style='color:"+colour4+";'>&#11044;</span>";
+			update_status();
 		}
 	};
 })(); //execute immediately
@@ -140,14 +151,14 @@ function update_opponent_progress(code) {
 };
 
 function update_buttons() {
-	if(gs.Guesses>0){
+	if (gs.Guesses > 0) {
 		document.getElementById('button-' + gs.Guesses).style.display = "block";
 		// Change background of circle when clicked
 		$(document).on('click', "#circle-" + gs.Guesses + "-1,#circle-" + gs.Guesses + "-2,#circle-" + gs.Guesses + "-3,#circle-" + gs.Guesses + "-4", function () {
 			changebg($(this).attr('id'), selected_colour);
 		});
 	}
-	
+
 };
 
 function changebg(id, colour) { // check if circle can change colour
@@ -218,13 +229,16 @@ function Queue_UI() {
 			// hide some elements
 			document.getElementById("select").innerHTML = "Colour Code Confirmed.";
 			document.getElementById("select").disabled = true;
+			document.body.style.cursor = "default";
 			document.getElementById("queue_colours_table").style.display = "none";
 		}
 	});
 
 	// Change background of circle when clicked
 	$(".queue_colours_code span").click(function () {
-		$(this).css("background-color", selected_colour);
+		if (document.getElementById("select").innerHTML != "Colour Code Confirmed.")
+			$(this).css("background-color", selected_colour);
+
 	});
 
 	// Make circle border bigger when clicked
@@ -529,13 +543,17 @@ function colour2Code(colour_arr) {
 
 function code2Colour(code) {
 	var colourarr = Array(4);
-	for (i = 0; i < colourarr.length; i++) {
+	for (i = 0; i < 4; i++) {
 		colourarr[i] = colours[code.charAt(i)];
 	}
 	return colourarr;
 }
-async function redirect() {
+async function redirect5() {
 	await sleep(5000);
+	document.location = 'splash';
+}
+async function redirect10() {
+	await sleep(10000);
 	document.location = 'splash';
 }
 
@@ -561,6 +579,7 @@ function add() {
 function timer() {
 	t = setTimeout(add, 1000);
 }
+
 function toggleFullScreen() {
 	if (document.getElementById("exit_fullscreen").style.display == "none" || document.getElementById("exit_fullscreen").style.display == "") {
 		document.getElementById("exit_fullscreen").style.display = "block";
@@ -590,4 +609,3 @@ function send2Server(type, data) {
 function newGame() {
 	location.reload();
 };
-

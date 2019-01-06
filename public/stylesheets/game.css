@@ -59,6 +59,7 @@ html,body {
     animation: blinking 0.9s steps(3, start) infinite;
 }
 
+
 /*    Buttons    */
 .buttons {
 	margin: 10px;
@@ -238,4 +239,14 @@ span {
 .opponent_block_circles,
 .block_circles {
 	display: none;
+}
+
+.console span {
+	position: relative;
+	border: none;
+	border-radius: 100%;
+	-moz-border-radius: 100%;
+	-webkit-border-radius: 100%;
+	width: auto;
+	height: auto;
 }

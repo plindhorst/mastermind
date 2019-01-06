@@ -2,7 +2,9 @@ const http = require('http');
 const express = require("express");
 const websocket = require("ws");
 
-var port=3000;
+const port = process.env.PORT || 3000;
+const host = process.env.HOST || 'localhost';
+
 var Game = require("./game");
 var GameStats = require("./stats");
 var app = express();
@@ -12,13 +14,13 @@ app.set("view engine", "ejs");
 // Routes
 app.use(express.static(__dirname + "/public"));
 
-
-app.get("/", (req, res) => {
-    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
+// GET
+app.get("/", function (req, res) {
+    res.redirect('/splash');
 });
 
 app.get("/play", (req, res) => {
-    res.sendFile("game.html", {
+    res.sendFile("/game.html", {
         root: "./public"
     });
 });
@@ -35,6 +37,9 @@ app.get("/rules", (req, res) => {
     });
 });
 
+app.get("/splash", (req, res) => {
+    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
+});
 
 
 var server = http.createServer(app);
@@ -109,6 +114,7 @@ wss.on("connection", function connection(ws) {
                     sendTo(gameObj.playerB, "OPPONENT-GUESS", [4,0]);
                     sendTo(gameObj.playerA, "WON-GAME");
                     sendTo(gameObj.playerB, "LOST-GAME");
+                    sendAnswers();
                     console.log("Player A won in Game"+gameObj.id);
                 }
                 
@@ -122,6 +128,7 @@ wss.on("connection", function connection(ws) {
                     if(gameObj.playerA_GUESSES==0 && result[0]!=4){ // Check if player has 0 guesses left = lost
                         sendTo(gameObj.playerA, "LOST-GAME");
                         sendTo(gameObj.playerB, "WON-GAME");
+                        sendAnswers();
                         console.log("Player B won in Game"+gameObj.id);
                     }
                 }
@@ -132,6 +139,7 @@ wss.on("connection", function connection(ws) {
                     sendTo(gameObj.playerA, "OPPONENT-GUESS", [4,0]);
                     sendTo(gameObj.playerB, "WON-GAME");
                     sendTo(gameObj.playerA, "LOST-GAME");
+                    sendAnswers();
                     console.log("Player B won in Game"+gameObj.id);
                 }
                 else{
@@ -143,6 +151,7 @@ wss.on("connection", function connection(ws) {
                     if(gameObj.playerB_GUESSES==0 && result[0]!=4){ // Check if player has 0 guesses left = lost
                         sendTo(gameObj.playerB, "LOST-GAME");
                         sendTo(gameObj.playerA, "WON-GAME");
+                        sendAnswers();
                         console.log("Player A won in Game"+gameObj.id);
                     }
                 }
@@ -181,6 +190,12 @@ wss.on("connection", function connection(ws) {
             sendTo(gameObj.playerB, "DRAW-GAME", null);
         }
     };
+
+    function sendAnswers() {
+        // Send answers to each player
+        sendTo(gameObj.playerA, "ANSWER", gameObj.B_Colour);
+        sendTo(gameObj.playerB, "ANSWER", gameObj.A_Colour);
+    };
 });
 
 
@@ -215,3 +230,4 @@ function getPegs(guess, answer) {
 };
 
 server.listen(port); // Listen at port 3000
+console.log(`App running at http://${host}:${port}`);

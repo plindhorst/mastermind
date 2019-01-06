@@ -36,7 +36,6 @@ body {
   background-color:#595959;
   border: 2px solid black;
   padding: 20px;
-  margin-bottom: 100px;
 }
 
 h2 {
@@ -66,7 +65,8 @@ p:before{
 .names{
   height: 50px;
   text-align: center;
-
+  margin-top:30px;
+  margin-bottom:30px;
 }
 .names span{
   color: #1b1818;
