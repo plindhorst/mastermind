@@ -2,7 +2,7 @@ const http = require('http');
 const express = require("express");
 const websocket = require("ws");
 
-var port=process.env.PORT || 3000;
+var port=3000;
 var Game = require("./game");
 var GameStats = require("./stats");
 var app = express();
@@ -13,9 +13,10 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 
-app.get("/", function (req, res) {
+app.get("/", (req, res) => {
     res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
 });
+
 app.get("/play", (req, res) => {
     res.sendFile("game.html", {
         root: "./public"
@@ -34,9 +35,6 @@ app.get("/rules", (req, res) => {
     });
 });
 
-app.get("/splash", (req, res) => {
-    res.render("splash.ejs", {inGamePlayers: GameStats.inGamePlayers, gamesInitialized: GameStats.gamesInitialized, queuePlayers: GameStats.queuePlayers});
-});
 
 
 var server = http.createServer(app);
