@@ -15,12 +15,21 @@ function GameState(){
 		this.Guesses--;
 		update_buttons();
 		update_status();
-        if(this.Guesses == 10){
+        if(this.Guesses == 0){
 			//lose
 			gs.state+="<p style='color:red;'>You have lost!</p>";
-			gs.state+="You will be redirected to the splash screen in 5 seconds.";
+			gs.state+="You will be redirected to the splash screen in 10 seconds.";
+			var colour1=colours[gs.colour.charAt(0)];
+			var colour2=colours[gs.colour.charAt(1)];
+			var colour3=colours[gs.colour.charAt(2)];
+			var colour4=colours[gs.colour.charAt(3)];
+			gs.state += "<br>Answer was: ";
+			gs.state += "<span id='opppo' style='color:"+colour1+";'>&#11044;</span>";
+			gs.state += "<span id='opppo' style='color:"+colour2+";'>&#11044;</span>";
+			gs.state += "<span id='opppo' style='color:"+colour3+";'>&#11044;</span>";
+			gs.state += "<span id='opppo' style='color:"+colour4+";'>&#11044;</span>";
 			update_status();
-			redirect();
+			redirect10();
         }
 	};
 	
@@ -208,7 +217,7 @@ function Game_UI() {
 				gs.state+="<p style='color:green;'>You have won!</p>";
 				gs.state+="You will be redirected to the splash screen in 5 seconds.";
 				update_status();
-				redirect();
+				redirect5();
 			}
 			update_guesses(result[0], result[1]);
 		}
@@ -312,7 +321,11 @@ function codemaker(){
 	update_status();
 }
 
-async function redirect() {
+async function redirect10() {
+	await sleep(10000);
+	document.location='splash';
+}
+async function redirect5() {
 	await sleep(5000);
 	document.location='splash';
 }
